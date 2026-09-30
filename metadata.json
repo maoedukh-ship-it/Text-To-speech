@@ -1,0 +1,8 @@
+{
+  "name": "KHMER VOICE AI | សំឡេងខ្មែរ AI",
+  "description": "State-of-the-Art Khmer AI Voice & Text-to-Speech synthesis platform with natural speech models, document reader, and audio library.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

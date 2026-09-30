@@ -1,0 +1,2762 @@
+<!DOCTYPE html>
+<html lang="km" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KHMER VOICE AI | សំឡេងខ្មែរ AI - Text to Speech Platform</title>
+  <meta name="description" content="State-of-the-Art Khmer AI Voice & Text-to-Speech synthesis platform with natural speech models, document reader, and audio library.">
+  <meta property="og:title" content="KHMER VOICE AI | សំឡេងខ្មែរ AI - Text to Speech Platform">
+  <meta property="og:description" content="State-of-the-Art Khmer AI Voice & Text-to-Speech synthesis platform with natural speech models, document reader, and audio library.">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f5f3ff',
+              100: '#ede9fe',
+              200: '#ddd6fe',
+              300: '#c4b5fd',
+              400: '#a78bfa',
+              500: '#8b5cf6',
+              600: '#7c3aed',
+              700: '#6d28d9',
+              800: '#5b21b6',
+              900: '#4c1d95',
+              950: '#1e0a45'
+            },
+            accent: {
+              teal: '#14b8a6',
+              emerald: '#10b981',
+              amber: '#f59e0b',
+              rose: '#f43f5e'
+            }
+          },
+          fontFamily: {
+            sans: ['"Kantumruy Pro"', '"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            khmer: ['"Kantumruy Pro"', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Google Fonts: Kantumruy Pro & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #090d16;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+
+    /* Ambient Dot Background */
+    .bg-grid-ambient {
+      background-size: 32px 32px;
+      background-image: 
+        radial-gradient(circle, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    }
+
+    /* Animated gradient text */
+    .gradient-text {
+      background: linear-gradient(135deg, #a78bfa 0%, #38bdf8 50%, #34d399 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Animated waveform bars */
+    @keyframes waveBounce {
+      0%, 100% { height: 6px; }
+      50% { height: 28px; }
+    }
+    .wave-anim {
+      animation: waveBounce 1.2s infinite ease-in-out;
+    }
+    .wave-anim:nth-child(2) { animation-delay: 0.15s; }
+    .wave-anim:nth-child(3) { animation-delay: 0.3s; }
+    .wave-anim:nth-child(4) { animation-delay: 0.45s; }
+    .wave-anim:nth-child(5) { animation-delay: 0.6s; }
+    .wave-anim:nth-child(6) { animation-delay: 0.75s; }
+  </style>
+</head>
+
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen antialiased flex flex-col selection:bg-brand-600 selection:text-white">
+
+  <!-- Top Application Header -->
+  <header class="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-slate-950/85 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Logo -->
+        <div class="flex items-center gap-3 cursor-pointer select-none" onclick="navigateTo('home')">
+          <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-brand-600 via-indigo-600 to-accent-teal flex items-center justify-center shadow-lg shadow-brand-600/30 ring-1 ring-white/20">
+            <i data-lucide="waves" class="w-5 h-5 text-white"></i>
+          </div>
+          <div>
+            <span class="font-bold text-base sm:text-lg tracking-tight text-white flex items-center gap-2">
+              KHMER <span class="gradient-text">VOICE AI</span>
+              <span class="hidden sm:inline text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-500/10 text-brand-300 border border-brand-500/20">v2.4 Neural</span>
+            </span>
+            <p class="text-[10px] text-slate-400 font-khmer">សំឡេងខ្មែរ AI ជំនាន់ថ្មី</p>
+          </div>
+        </div>
+
+        <!-- Desktop Navigation Items -->
+        <nav class="hidden xl:flex items-center gap-1">
+          <button onclick="navigateTo('home')" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-medium transition text-slate-300 hover:text-white hover:bg-slate-800/60" data-view="home">
+            <span class="flex items-center gap-1.5"><i data-lucide="home" class="w-3.5 h-3.5"></i><span data-i18n="nav_home">Home</span></span>
+          </button>
+          <button onclick="navigateTo('tts')" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-medium transition text-slate-300 hover:text-white hover:bg-slate-800/60" data-view="tts">
+            <span class="flex items-center gap-1.5"><i data-lucide="mic" class="w-3.5 h-3.5"></i><span data-i18n="nav_tts">Text to Speech</span></span>
+          </button>
+          <button onclick="navigateTo('doc2speech')" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-medium transition text-slate-300 hover:text-white hover:bg-slate-800/60" data-view="doc2speech">
+            <span class="flex items-center gap-1.5"><i data-lucide="file-text" class="w-3.5 h-3.5"></i><span data-i18n="nav_doc">Doc to Speech</span></span>
+          </button>
+          <button onclick="navigateTo('library')" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-medium transition text-slate-300 hover:text-white hover:bg-slate-800/60" data-view="library">
+            <span class="flex items-center gap-1.5"><i data-lucide="library" class="w-3.5 h-3.5"></i><span data-i18n="nav_library">Audio Library</span></span>
+          </button>
+          <button onclick="navigateTo('dashboard')" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-medium transition text-slate-300 hover:text-white hover:bg-slate-800/60" data-view="dashboard">
+            <span class="flex items-center gap-1.5"><i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i><span data-i18n="nav_dashboard">Dashboard</span></span>
+          </button>
+          <button onclick="navigateTo('pricing')" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-medium transition text-slate-300 hover:text-white hover:bg-slate-800/60" data-view="pricing">
+            <span class="flex items-center gap-1.5"><i data-lucide="credit-card" class="w-3.5 h-3.5"></i><span data-i18n="nav_pricing">Pricing</span></span>
+          </button>
+          <button onclick="navigateTo('docs')" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-medium transition text-slate-300 hover:text-white hover:bg-slate-800/60" data-view="docs">
+            <span class="flex items-center gap-1.5"><i data-lucide="book-open" class="w-3.5 h-3.5"></i><span data-i18n="nav_docs">Docs</span></span>
+          </button>
+        </nav>
+
+        <!-- Right Quick Actions: Language Toggle, Admin, Auth Container -->
+        <div class="flex items-center gap-2">
+          <!-- Khmer/English Toggle Button -->
+          <button id="langToggleBtn" onclick="toggleLanguage()" class="px-2.5 py-1 text-xs font-semibold rounded-lg border border-slate-700 bg-slate-900/90 hover:bg-slate-800 text-slate-300 flex items-center gap-1.5 transition">
+            <i data-lucide="globe" class="w-3.5 h-3.5 text-accent-teal"></i>
+            <span id="currentLangLabel">KM</span>
+          </button>
+
+          <!-- Admin Quick Access -->
+          <button onclick="navigateTo('admin')" title="Admin Panel" class="p-2 rounded-lg border border-slate-800 bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-brand-400 transition" data-view="admin">
+            <i data-lucide="shield" class="w-4 h-4"></i>
+          </button>
+
+          <!-- User Session Container -->
+          <div id="authContainer" class="flex items-center gap-2">
+            <!-- Injected by JavaScript -->
+          </div>
+
+          <!-- Mobile Hamburger -->
+          <button onclick="toggleMobileMenu()" class="xl:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800">
+            <i data-lucide="menu" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobileMenu" class="hidden xl:hidden border-b border-slate-800 bg-slate-950/95 px-4 pt-2 pb-4 space-y-1.5 text-xs font-medium">
+      <button onclick="navigateTo('home')" class="block w-full text-left px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800">🏠 ទំព័រដើម (Home)</button>
+      <button onclick="navigateTo('tts')" class="block w-full text-left px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800">🎙️ Text to Speech Studio</button>
+      <button onclick="navigateTo('doc2speech')" class="block w-full text-left px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800">📁 Document to Speech</button>
+      <button onclick="navigateTo('library')" class="block w-full text-left px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800">🎧 Audio Library</button>
+      <button onclick="navigateTo('dashboard')" class="block w-full text-left px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800">📊 Dashboard</button>
+      <button onclick="navigateTo('account')" class="block w-full text-left px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800">👤 My Account</button>
+      <button onclick="navigateTo('pricing')" class="block w-full text-left px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800">💳 Pricing</button>
+      <button onclick="navigateTo('docs')" class="block w-full text-left px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800">📚 Documentation & API</button>
+      <button onclick="navigateTo('admin')" class="block w-full text-left px-3 py-2 rounded-lg text-amber-400 hover:bg-slate-800">⚙ Admin Management</button>
+    </div>
+  </header>
+
+  <!-- Toast Notification -->
+  <div id="toastNotification" class="fixed bottom-5 right-5 z-50 transform translate-y-24 opacity-0 transition-all duration-300 max-w-sm w-full bg-slate-900 border border-slate-700/80 p-4 rounded-2xl shadow-2xl flex items-start gap-3 pointer-events-none">
+    <div id="toastIcon" class="p-2 rounded-xl bg-brand-500/20 text-brand-400 shrink-0">
+      <i data-lucide="check" class="w-4 h-4"></i>
+    </div>
+    <div class="flex-1">
+      <h4 id="toastTitle" class="text-xs font-bold text-white">ជោគជ័យ</h4>
+      <p id="toastMessage" class="text-[11px] text-slate-400 mt-0.5 font-khmer">ប្រតិបត្តិការបានជោគជ័យ។</p>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MAIN APP CONTAINER                                       -->
+  <!-- ======================================================== -->
+  <main class="flex-1 relative bg-grid-ambient">
+
+    <!-- 1. HOME VIEW (🏠) -->
+    <section id="view-home" class="view-section py-10 md:py-16">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
+        
+        <!-- Hero Section -->
+        <div class="text-center max-w-4xl mx-auto relative pt-4">
+          <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-80 h-80 bg-brand-600/20 blur-[100px] rounded-full pointer-events-none -z-10"></div>
+          
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-brand-500/30 bg-brand-500/10 text-brand-300 text-xs font-semibold mb-6">
+            <span class="flex h-2 w-2 rounded-full bg-emerald-400 animate-ping"></span>
+            <span data-i18n="hero_badge">✨ Khmer Neural Acoustic Engine 2.4 - Ready to Deploy</span>
+          </div>
+
+          <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight">
+            <span class="block text-white mb-2" data-i18n="hero_title_1">បច្ចេកវិទ្យាបំប្លែងអត្ថបទ</span>
+            <span class="gradient-text font-khmer" data-i18n="hero_title_2">ទៅជាសំឡេងខ្មែរឆ្លាតវៃ និងធម្មជាតិបំផុត</span>
+          </h1>
+
+          <p class="mt-5 text-sm sm:text-base text-slate-400 max-w-2xl mx-auto font-khmer leading-relaxed" data-i18n="hero_desc">
+            បង្កើតសំឡេងនិទានរឿង ព័ត៌មាន មេរៀន និងវីដេអូ TikTok/YouTube ជាភាសាខ្មែរយ៉ាងរលូន ដោយប្រើប្រព័ន្ធ AI Deep Acoustic ស្គាល់អក្សរខ្នាតស្ដង់ដារ ស្រៈ និងព្យញ្ជនៈច្បាស់លាស់ 100%។
+          </p>
+
+          <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <button onclick="navigateTo('tts')" class="px-6 py-3 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 font-semibold text-white text-xs sm:text-sm shadow-xl shadow-brand-500/25 transition flex items-center gap-2 group">
+              <i data-lucide="mic" class="w-4 h-4 group-hover:scale-110 transition"></i>
+              <span data-i18n="btn_try_studio">ចូលទៅកាន់ TTS Studio</span>
+            </button>
+            <button onclick="scrollToSection('home-demo')" class="px-6 py-3 rounded-xl border border-slate-700 bg-slate-900/80 hover:bg-slate-800 text-slate-200 font-medium text-xs sm:text-sm transition flex items-center gap-2">
+              <i data-lucide="play-circle" class="w-4 h-4 text-accent-teal"></i>
+              <span data-i18n="btn_listen_demo">ស្ដាប់សំឡេងសាកល្បង</span>
+            </button>
+          </div>
+
+          <!-- Quick Samples Pills -->
+          <div class="mt-8 flex flex-wrap justify-center items-center gap-2 text-xs text-slate-400">
+            <span class="text-slate-500 text-[11px]">គំរូសាកល្បងលឿន:</span>
+            <button onclick="setQuickPrompt('ជម្រាបសួរពុកម៉ែបងប្អូនទាំងអស់គ្នា សូមស្វាគមន៍មកកាន់ព័ត៌មានជាតិប្រចាំថ្ងៃ។')" class="px-3 py-1 rounded-full bg-slate-900 border border-slate-800 hover:border-brand-500/50 hover:text-white transition text-[11px] font-khmer">
+              🎙️ ព័ត៌មានជាតិ
+            </button>
+            <button onclick="setQuickPrompt('កាលពីព្រេងនាយ មានសេដ្ឋីម្នាក់រស់នៅក្បែរមាត់ទន្លេមេគង្គ មានចរិតស្លូតបូត។')" class="px-3 py-1 rounded-full bg-slate-900 border border-slate-800 hover:border-brand-500/50 hover:text-white transition text-[11px] font-khmer">
+              📖 រឿងនិទានខ្មែរ
+            </button>
+            <button onclick="setQuickPrompt('កម្មវិធីបញ្ចុះតម្លៃពិសេសរហូតដល់ហាសិបភាគរយ សម្រាប់អតិថិជនដំបូងមួយរយនាក់!')" class="px-3 py-1 rounded-full bg-slate-900 border border-slate-800 hover:border-brand-500/50 hover:text-white transition text-[11px] font-khmer">
+              🛍️ ស្ប៉តពាណិជ្ជកម្ម
+            </button>
+          </div>
+        </div>
+
+        <!-- Interactive Quick TTS Demo Card -->
+        <div id="home-demo" class="max-w-4xl mx-auto rounded-3xl border border-slate-800 bg-slate-900/70 p-6 md:p-8 backdrop-blur shadow-2xl relative overflow-hidden">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4 mb-6">
+            <div class="flex items-center gap-3">
+              <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
+              <h3 class="font-bold text-white text-sm sm:text-base flex items-center gap-2">
+                <i data-lucide="sparkles" class="w-4 h-4 text-brand-400"></i>
+                <span data-i18n="demo_title">សាកល្បង TTS ផ្ទាល់ (Interactive Demo)</span>
+              </h3>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-slate-400 font-khmer">ជ្រើសរើសសំឡេង:</span>
+              <select id="homeVoiceSelect" class="bg-slate-800 text-xs text-white border border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none focus:border-brand-500 font-khmer">
+                <option value="sophea">សុភា (Sophea - ស្រី ព័ត៌មាន)</option>
+                <option value="dara">តារា (Dara - ប្រុស ផ្លូវការ)</option>
+                <option value="bopha">បុប្ផា (Bopha - ស្រី ទន់ភ្លន់)</option>
+                <option value="piseth">ពិសិដ្ឋ (Piseth - ប្រុស ចាស់ទុំ)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <textarea id="homeDemoInput" rows="3" class="w-full bg-slate-950/80 border border-slate-800 focus:border-brand-500 rounded-2xl p-4 text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-brand-500 font-khmer text-sm sm:text-base resize-none transition" placeholder="វាយបញ្ចូលអត្ថបទជាភាសាខ្មែរនៅទីនេះដើម្បីសាកល្បង...">សូមស្វាគមន៍មកកាន់ប្រព័ន្ធសំឡេងខ្មែរ AI ដែលមានសម្លេងរលូន និងធម្មជាតិបំផុត សម្រាប់គ្រប់ការងាររបស់អ្នក។</textarea>
+            
+            <div class="flex flex-wrap items-center justify-between gap-4 pt-2">
+              <div class="flex items-center gap-3">
+                <button id="homeDemoPlayBtn" onclick="runHomeDemoSpeech()" class="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs sm:text-sm flex items-center gap-2 transition shadow-md shadow-brand-600/30">
+                  <i data-lucide="play" class="w-4 h-4"></i>
+                  <span data-i18n="btn_speak_now">បន្លឺសំឡេងភ្លាមៗ</span>
+                </button>
+                <button onclick="stopSpeech()" class="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs sm:text-sm transition" title="Stop">
+                  <i data-lucide="square" class="w-4 h-4"></i>
+                </button>
+                <span id="demoAudioStatus" class="text-xs text-slate-400 flex items-center gap-1.5 font-khmer">
+                  <span class="w-2 h-2 rounded-full bg-slate-500" id="demoStatusDot"></span>
+                  <span id="demoStatusText">រួចរាល់ (Ready)</span>
+                </span>
+              </div>
+
+              <!-- Animated Waveform Bars -->
+              <div id="demoWaveBars" class="flex items-center gap-1.5 h-6">
+                <span class="w-1 bg-brand-500 rounded-full h-2"></span>
+                <span class="w-1 bg-brand-400 rounded-full h-4"></span>
+                <span class="w-1 bg-indigo-400 rounded-full h-3"></span>
+                <span class="w-1 bg-accent-teal rounded-full h-5"></span>
+                <span class="w-1 bg-brand-500 rounded-full h-3"></span>
+                <span class="w-1 bg-brand-300 rounded-full h-2"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- How It Works (3 Steps) -->
+        <div class="space-y-10">
+          <div class="text-center max-w-xl mx-auto">
+            <h2 class="text-2xl sm:text-3xl font-bold text-white font-khmer" data-i18n="how_title">របៀបដំណើរការងាយៗ</h2>
+            <p class="text-slate-400 text-xs sm:text-sm mt-2 font-khmer" data-i18n="how_sub">បង្កើតឯកសារសំឡេងត្រឹមតែ ៣ ជំហានប៉ុណ្ណោះ</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="p-6 rounded-3xl border border-slate-800/80 bg-slate-900/40 relative group hover:border-brand-500/40 transition">
+              <div class="w-12 h-12 rounded-2xl bg-brand-500/10 text-brand-400 flex items-center justify-center font-bold text-lg mb-4 group-hover:scale-110 transition">
+                01
+              </div>
+              <h3 class="text-base font-bold text-white mb-2 font-khmer" data-i18n="step1_title">បញ្ចូលអត្ថបទ ឬ ឯកសារ</h3>
+              <p class="text-xs text-slate-400 leading-relaxed font-khmer" data-i18n="step1_desc">
+                ចម្លងអត្ថបទជាភាសាខ្មែរដាក់ក្នុងប្រអប់ ឬ Upload ឯកសារ PDF, DOCX, TXT ចូលប្រព័ន្ធដោយផ្ទាល់។
+              </p>
+            </div>
+
+            <div class="p-6 rounded-3xl border border-slate-800/80 bg-slate-900/40 relative group hover:border-accent-teal/40 transition">
+              <div class="w-12 h-12 rounded-2xl bg-accent-teal/10 text-accent-teal flex items-center justify-center font-bold text-lg mb-4 group-hover:scale-110 transition">
+                02
+              </div>
+              <h3 class="text-base font-bold text-white mb-2 font-khmer" data-i18n="step2_title">ជ្រើសរើសសំឡេង & ល្បឿន</h3>
+              <p class="text-xs text-slate-400 leading-relaxed font-khmer" data-i18n="step2_desc">
+                ជ្រើសរើសអ្នកអានស្រី ឬប្រុស កែសម្រួលកម្រិតសម្លេង (Pitch) ល្បឿនអាន (Speed) តាមតម្រូវការជាក់ស្ដែង។
+              </p>
+            </div>
+
+            <div class="p-6 rounded-3xl border border-slate-800/80 bg-slate-900/40 relative group hover:border-emerald-500/40 transition">
+              <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold text-lg mb-4 group-hover:scale-110 transition">
+                03
+              </div>
+              <h3 class="text-base font-bold text-white mb-2 font-khmer" data-i18n="step3_title">ទាញយក Audio គុណភាពខ្ពស់</h3>
+              <p class="text-xs text-slate-400 leading-relaxed font-khmer" data-i18n="step3_desc">
+                ចុចបង្កើតសំឡេង រួចស្ដាប់ផ្ទៀងផ្ទាត់ និងទាញយកជាឯកសារ WAV / MP3 គុណភាព Studio បានភ្លាមៗ។
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Features Showcase -->
+        <div class="space-y-10">
+          <div class="text-center max-w-xl mx-auto">
+            <h2 class="text-2xl sm:text-3xl font-bold text-white font-khmer" data-i18n="feat_title">លក្ខណៈពិសេសចម្បង</h2>
+            <p class="text-slate-400 text-xs sm:text-sm mt-2 font-khmer" data-i18n="feat_sub">បំពាក់ដោយបច្ចេកវិទ្យា AI ជំនាន់ចុងក្រោយបង្អស់</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-slate-700 transition">
+              <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center mb-3">
+                <i data-lucide="heart" class="w-5 h-5"></i>
+              </div>
+              <h4 class="font-bold text-white text-sm mb-1 font-khmer" data-i18n="feat1_title">ទឹកដមសម្លេងធម្មជាតិ</h4>
+              <p class="text-xs text-slate-400 font-khmer" data-i18n="feat1_desc">ការបញ្ចេញសំឡេងមានដង្ហើម និងការលើកដាក់សំឡេងដូចមនុស្សពិតៗ។</p>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-slate-700 transition">
+              <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-3">
+                <i data-lucide="zap" class="w-5 h-5"></i>
+              </div>
+              <h4 class="font-bold text-white text-sm mb-1 font-khmer" data-i18n="feat2_title">ល្បឿនបំប្លែងលឿន</h4>
+              <p class="text-xs text-slate-400 font-khmer" data-i18n="feat2_desc">បម្លែងអត្ថបទរាប់ពាន់ពាក្យត្រឹមតែប៉ុន្មានវិនាទីប៉ុណ្ណោះ ជាមួយ Ultra-low latency។</p>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-slate-700 transition">
+              <div class="w-10 h-10 rounded-xl bg-accent-teal/10 text-accent-teal flex items-center justify-center mb-3">
+                <i data-lucide="languages" class="w-5 h-5"></i>
+              </div>
+              <h4 class="font-bold text-white text-sm mb-1 font-khmer" data-i18n="feat3_title">ស្គាល់អក្ខរាវិរុទ្ធខ្មែរ</h4>
+              <p class="text-xs text-slate-400 font-khmer" data-i18n="feat3_desc">អានព្យញ្ជនៈ ស្រៈ ជើងអក្សរ និងលេខខ្មែរបានត្រឹមត្រូវឥតខ្ចោះ។</p>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-slate-700 transition">
+              <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center mb-3">
+                <i data-lucide="download" class="w-5 h-5"></i>
+              </div>
+              <h4 class="font-bold text-white text-sm mb-1 font-khmer" data-i18n="feat4_title">ទាញយក WAV / MP3</h4>
+              <p class="text-xs text-slate-400 font-khmer" data-i18n="feat4_desc">កម្រិតសម្លេង 44.1kHz HD Audio យកទៅប្រើប្រាស់ក្នុងគម្រោងពាណិជ្ជកម្មបាន។</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Voice Samples Showcase -->
+        <div class="space-y-6">
+          <div class="text-center max-w-xl mx-auto">
+            <h2 class="text-2xl sm:text-3xl font-bold text-white font-khmer" data-i18n="voices_title">គំរូសម្លេងតំណាង</h2>
+            <p class="text-slate-400 text-xs sm:text-sm mt-2 font-khmer" data-i18n="voices_sub">សាកល្បងស្ដាប់តួអង្គសំឡេងនីមួយៗ</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Sophea Card -->
+            <div class="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-brand-500/50 transition">
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-pink-500 to-rose-400 flex items-center justify-center text-white font-bold text-base shadow-md">
+                  សុ
+                </div>
+                <div>
+                  <h4 class="font-bold text-white text-sm font-khmer">សុភា (Sophea)</h4>
+                  <span class="text-[11px] text-slate-400 font-khmer">ស្រី • ព័ត៌មានផ្លូវការ</span>
+                </div>
+              </div>
+              <p class="text-xs text-slate-400 font-khmer mb-4">"សេចក្ដីរាយការណ៍ព័ត៌មានជាតិ និងអន្តរជាតិប្រចាំថ្ងៃ..."</p>
+              <button onclick="playVoiceCardSample('sophea', 'ជម្រាបសួរ ខ្ញុំឈ្មោះសុភា ជាអ្នកអានព័ត៌មានបែបស្ដង់ដារ។')" class="w-full py-2 rounded-xl bg-slate-800 hover:bg-brand-600 text-slate-200 hover:text-white text-xs font-semibold flex items-center justify-center gap-2 transition font-khmer">
+                <i data-lucide="volume-2" class="w-4 h-4"></i> ស្ដាប់សំឡេងគំរូ
+              </button>
+            </div>
+
+            <!-- Dara Card -->
+            <div class="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-brand-500/50 transition">
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-400 flex items-center justify-center text-white font-bold text-base shadow-md">
+                  ដា
+                </div>
+                <div>
+                  <h4 class="font-bold text-white text-sm font-khmer">ដារ៉ា (Dara)</h4>
+                  <span class="text-[11px] text-slate-400 font-khmer">ប្រុស • និទានរឿង & អប់រំ</span>
+                </div>
+              </div>
+              <p class="text-xs text-slate-400 font-khmer mb-4">"កាលពីរាប់រយឆ្នាំមុន នៅលើទឹកដីអាណាចក្រខ្មែរ..."</p>
+              <button onclick="playVoiceCardSample('dara', 'សួស្តីបាទ ខ្ញុំបាទឈ្មោះដារ៉ា ស័ក្តិសមសម្រាប់ការអានសៀវភៅ និងឯកសារ។')" class="w-full py-2 rounded-xl bg-slate-800 hover:bg-brand-600 text-slate-200 hover:text-white text-xs font-semibold flex items-center justify-center gap-2 transition font-khmer">
+                <i data-lucide="volume-2" class="w-4 h-4"></i> ស្ដាប់សំឡេងគំរូ
+              </button>
+            </div>
+
+            <!-- Bopha Card -->
+            <div class="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-brand-500/50 transition">
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-purple-500 to-indigo-400 flex items-center justify-center text-white font-bold text-base shadow-md">
+                  បុ
+                </div>
+                <div>
+                  <h4 class="font-bold text-white text-sm font-khmer">បុប្ផា (Bopha)</h4>
+                  <span class="text-[11px] text-slate-400 font-khmer">ស្រី • ទន់ភ្លន់ សម្រាកចិត្ត</span>
+                </div>
+              </div>
+              <p class="text-xs text-slate-400 font-khmer mb-4">"សូមរីករាយជាមួយពេលវេលាសម្រាកកាយ និងចិត្តដ៏ស្ងប់..."</p>
+              <button onclick="playVoiceCardSample('bopha', 'សួស្តីបងប្អូន ខ្ញុំគឺបុប្ផា មានសំឡេងស្រទន់ សម្រាប់ការសម្រាកអារម្មណ៍។')" class="w-full py-2 rounded-xl bg-slate-800 hover:bg-brand-600 text-slate-200 hover:text-white text-xs font-semibold flex items-center justify-center gap-2 transition font-khmer">
+                <i data-lucide="volume-2" class="w-4 h-4"></i> ស្ដាប់សំឡេងគំរូ
+              </button>
+            </div>
+
+            <!-- Piseth Card -->
+            <div class="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-brand-500/50 transition">
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-amber-500 to-orange-400 flex items-center justify-center text-white font-bold text-base shadow-md">
+                  ពិ
+                </div>
+                <div>
+                  <h4 class="font-bold text-white text-sm font-khmer">ពិសិដ្ឋ (Piseth)</h4>
+                  <span class="text-[11px] text-slate-400 font-khmer">ប្រុស • ស្វាហាប់ ចាស់ទុំ</span>
+                </div>
+              </div>
+              <p class="text-xs text-slate-400 font-khmer mb-4">"ប្រូម៉ូសិនកក្រើកមេឃ មកដល់ហើយនៅថ្ងៃនេះ!"</p>
+              <button onclick="playVoiceCardSample('piseth', 'ហ្វេនៗទាំងអស់គ្នា ខ្ញុំគឺពិសិដ្ឋ រួចរាល់សម្រាប់ស្ប៉តពាណិជ្ជកម្មដ៏ទាក់ទាញ!')" class="w-full py-2 rounded-xl bg-slate-800 hover:bg-brand-600 text-slate-200 hover:text-white text-xs font-semibold flex items-center justify-center gap-2 transition font-khmer">
+                <i data-lucide="volume-2" class="w-4 h-4"></i> ស្ដាប់សំឡេងគំរូ
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA Banner -->
+        <div class="rounded-3xl bg-gradient-to-r from-brand-950 via-indigo-950 to-slate-900 border border-brand-500/30 p-8 sm:p-12 text-center relative overflow-hidden">
+          <div class="max-w-2xl mx-auto space-y-4">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white font-khmer" data-i18n="cta_title">ត្រៀមខ្លួនរួចរាល់ដើម្បីបង្កើតសំឡេងខ្មែរហើយឬនៅ?</h2>
+            <p class="text-slate-300 font-khmer text-xs sm:text-sm" data-i18n="cta_desc">ចាប់ផ្ដើមប្រើប្រាស់ដោយឥតគិតថ្លៃថ្ងៃនេះ ដោយមិនចាំបាច់ភ្ជាប់កាតធនាគារឡើយ។</p>
+            <div class="pt-3 flex flex-wrap justify-center gap-3">
+              <button onclick="navigateTo('tts')" class="px-6 py-3 rounded-xl bg-white text-slate-950 font-bold text-xs sm:text-sm hover:bg-slate-200 transition shadow-xl font-khmer">
+                សាកល្បងដោយឥតគិតថ្លៃ (Free Trial)
+              </button>
+              <button onclick="navigateTo('pricing')" class="px-6 py-3 rounded-xl border border-slate-700 bg-slate-900/80 hover:bg-slate-800 text-white font-medium text-xs sm:text-sm transition font-khmer">
+                មើលកញ្ចប់តម្លៃ (Pricing)
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 2. TEXT TO SPEECH STUDIO (🎙️) -->
+    <section id="view-tts" class="view-section py-8 hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+          <div>
+            <h1 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2.5">
+              <span class="p-2 rounded-xl bg-brand-600/20 text-brand-400 border border-brand-500/30">
+                <i data-lucide="mic" class="w-5 h-5"></i>
+              </span>
+              <span>Khmer Text to Speech Studio</span>
+            </h1>
+            <p class="text-xs text-slate-400 font-khmer mt-1">បម្លែងអត្ថបទទៅជាសំឡេងធម្មជាតិ និងកែសម្រួលប៉ារ៉ាម៉ែត្រសំឡេង</p>
+          </div>
+          
+          <div class="flex items-center gap-2">
+            <button onclick="insertSampleKhmerText()" class="px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-900 hover:bg-slate-800 text-xs font-medium text-slate-300 flex items-center gap-1.5 transition font-khmer">
+              <i data-lucide="file-text" class="w-3.5 h-3.5 text-accent-teal"></i>
+              <span>ដាក់អត្ថបទគំរូ</span>
+            </button>
+            <button onclick="clearTtsText()" class="px-3 py-1.5 rounded-xl border border-slate-800 bg-slate-900/50 hover:bg-rose-950/40 text-xs font-medium text-rose-400 hover:border-rose-800 flex items-center gap-1.5 transition">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              <span>Clear</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Studio 2 Columns Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          
+          <!-- Left Column: Khmer Editor (7 cols) -->
+          <div class="lg:col-span-7 space-y-4">
+            <div class="rounded-3xl border border-slate-800 bg-slate-900/80 p-5 shadow-xl flex flex-col h-[520px]">
+              
+              <div class="flex items-center justify-between pb-3 border-b border-slate-800 text-xs text-slate-400">
+                <div class="flex items-center gap-3 font-khmer">
+                  <span class="font-semibold text-slate-200">Khmer Text Input</span>
+                  <span class="text-slate-600">|</span>
+                  <span id="ttsCharCount">0 តួអក្សរ</span>
+                  <span class="text-slate-600">•</span>
+                  <span id="ttsWordCount">0 ពាក្យ</span>
+                </div>
+                
+                <button onclick="copyTtsInputText()" title="Copy Text" class="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition">
+                  <i data-lucide="copy" class="w-4 h-4"></i>
+                </button>
+              </div>
+
+              <!-- Main Text Area -->
+              <textarea id="ttsTextInput" class="w-full flex-1 bg-transparent py-4 text-slate-100 placeholder-slate-600 focus:outline-none font-khmer text-base sm:text-lg leading-relaxed resize-none" placeholder="សូមសរសេរ ឬចម្លងអត្ថបទជាភាសាខ្មែរនៅទីនេះ..."></textarea>
+
+              <!-- Quick Presets -->
+              <div class="pt-3 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-1.5 text-xs text-slate-400 font-khmer">
+                  <span>ទម្រង់សំឡេង:</span>
+                  <button onclick="applyStyleTag('neutral')" class="style-tag px-2.5 py-1 rounded-lg bg-brand-500/20 text-brand-300 border border-brand-500/40 text-[11px] font-medium" data-style="neutral">ធម្មតា (Neutral)</button>
+                  <button onclick="applyStyleTag('news')" class="style-tag px-2.5 py-1 rounded-lg bg-slate-800 text-slate-400 hover:bg-slate-700 text-[11px] font-medium" data-style="news">ព័ត៌មាន (News)</button>
+                  <button onclick="applyStyleTag('calm')" class="style-tag px-2.5 py-1 rounded-lg bg-slate-800 text-slate-400 hover:bg-slate-700 text-[11px] font-medium" data-style="calm">ស្រទន់ (Calm)</button>
+                </div>
+
+                <div class="text-[11px] text-slate-500 font-khmer">
+                  គាំទ្រ Khmer Unicode 100%
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Settings & Sliders (5 cols) -->
+          <div class="lg:col-span-5 space-y-4">
+            <div class="rounded-3xl border border-slate-800 bg-slate-900/80 p-5 shadow-xl space-y-5">
+              
+              <div class="flex items-center justify-between">
+                <h3 class="font-bold text-white text-sm sm:text-base flex items-center gap-2">
+                  <i data-lucide="sliders" class="w-4 h-4 text-brand-400"></i>
+                  <span>Voice Settings</span>
+                </h3>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Acoustic Engine 2.4</span>
+              </div>
+
+              <!-- Language & Voice Selection -->
+              <div class="space-y-3">
+                <div>
+                  <label class="block text-xs font-medium text-slate-400 mb-1.5 font-khmer">ភាសា (Language)</label>
+                  <div class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 flex items-center gap-2">
+                    <span>🇰🇭</span>
+                    <span>ភាសាខ្មែរ (Khmer - km-KH)</span>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-medium text-slate-400 mb-1.5 font-khmer">អ្នកអាន (Voice Model)</label>
+                  <div class="grid grid-cols-1 gap-2">
+                    
+                    <label class="voice-card-radio flex items-center justify-between p-3 rounded-xl border border-brand-500/50 bg-brand-500/10 cursor-pointer transition">
+                      <div class="flex items-center gap-3">
+                        <input type="radio" name="studioVoice" value="sophea" checked class="text-brand-500 focus:ring-brand-500">
+                        <div>
+                          <p class="text-xs sm:text-sm font-semibold text-white font-khmer">សុភា (Sophea)</p>
+                          <p class="text-[11px] text-slate-400 font-khmer">ស្រី • ព័ត៌មាន និងអត្ថបទស្ដង់ដារ</p>
+                        </div>
+                      </div>
+                      <span class="text-[10px] text-brand-400 font-semibold px-2 py-0.5 rounded bg-brand-500/20 font-khmer">ពេញនិយម</span>
+                    </label>
+
+                    <label class="voice-card-radio flex items-center justify-between p-3 rounded-xl border border-slate-800 bg-slate-950/60 hover:bg-slate-800/40 cursor-pointer transition">
+                      <div class="flex items-center gap-3">
+                        <input type="radio" name="studioVoice" value="dara" class="text-brand-500 focus:ring-brand-500">
+                        <div>
+                          <p class="text-xs sm:text-sm font-semibold text-white font-khmer">ដារ៉ា (Dara)</p>
+                          <p class="text-[11px] text-slate-400 font-khmer">ប្រុស • និទានរឿង & អប់រំផ្លូវការ</p>
+                        </div>
+                      </div>
+                      <span class="text-[10px] text-slate-500 font-khmer">ផ្លូវការ</span>
+                    </label>
+
+                    <label class="voice-card-radio flex items-center justify-between p-3 rounded-xl border border-slate-800 bg-slate-950/60 hover:bg-slate-800/40 cursor-pointer transition">
+                      <div class="flex items-center gap-3">
+                        <input type="radio" name="studioVoice" value="bopha" class="text-brand-500 focus:ring-brand-500">
+                        <div>
+                          <p class="text-xs sm:text-sm font-semibold text-white font-khmer">បុប្ផា (Bopha)</p>
+                          <p class="text-[11px] text-slate-400 font-khmer">ស្រី • សំឡេងស្រទន់ មនោសញ្ចេតនា</p>
+                        </div>
+                      </div>
+                      <span class="text-[10px] text-purple-400 font-khmer">ស្រទន់</span>
+                    </label>
+
+                    <label class="voice-card-radio flex items-center justify-between p-3 rounded-xl border border-slate-800 bg-slate-950/60 hover:bg-slate-800/40 cursor-pointer transition">
+                      <div class="flex items-center gap-3">
+                        <input type="radio" name="studioVoice" value="piseth" class="text-brand-500 focus:ring-brand-500">
+                        <div>
+                          <p class="text-xs sm:text-sm font-semibold text-white font-khmer">ពិសិដ្ឋ (Piseth)</p>
+                          <p class="text-[11px] text-slate-400 font-khmer">ប្រុស • ចាស់ទុំ ពាណិជ្ជកម្ម</p>
+                        </div>
+                      </div>
+                      <span class="text-[10px] text-amber-400 font-khmer">ចាស់ទុំ</span>
+                    </label>
+
+                  </div>
+                </div>
+              </div>
+
+              <!-- Sliders -->
+              <div class="space-y-4 pt-2 border-t border-slate-800 font-khmer">
+                <div>
+                  <div class="flex items-center justify-between text-xs text-slate-300 mb-1">
+                    <span>ល្បឿន (Speed)</span>
+                    <span id="speedVal" class="font-mono text-brand-400 font-bold">1.0x</span>
+                  </div>
+                  <input type="range" id="ttsSpeedSlider" min="0.5" max="2.0" step="0.1" value="1.0" class="w-full accent-brand-500 h-1.5 bg-slate-800 rounded-lg cursor-pointer">
+                  <div class="flex justify-between text-[10px] text-slate-500 mt-0.5">
+                    <span>0.5x (យឺត)</span>
+                    <span>1.0x (ធម្មតា)</span>
+                    <span>2.0x (លឿន)</span>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="flex items-center justify-between text-xs text-slate-300 mb-1">
+                    <span>កម្រិតសម្លេង (Pitch)</span>
+                    <span id="pitchVal" class="font-mono text-brand-400 font-bold">1.0</span>
+                  </div>
+                  <input type="range" id="ttsPitchSlider" min="0.5" max="1.5" step="0.05" value="1.0" class="w-full accent-brand-500 h-1.5 bg-slate-800 rounded-lg cursor-pointer">
+                </div>
+
+                <div>
+                  <div class="flex items-center justify-between text-xs text-slate-300 mb-1">
+                    <span>កម្រិតសំឡេងបន្លឺ (Volume)</span>
+                    <span id="volumeVal" class="font-mono text-brand-400 font-bold">100%</span>
+                  </div>
+                  <input type="range" id="ttsVolumeSlider" min="0" max="1" step="0.05" value="1.0" class="w-full accent-brand-500 h-1.5 bg-slate-800 rounded-lg cursor-pointer">
+                </div>
+              </div>
+
+              <!-- Action Button -->
+              <button id="generateAudioBtn" onclick="generateKhmerSpeech()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold text-xs sm:text-sm shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2 transition group font-khmer">
+                <i data-lucide="sparkles" class="w-4 h-4 group-hover:rotate-12 transition"></i>
+                <span id="genBtnText" data-i18n="btn_generate_speech">បំប្លែងទៅជាសំឡេង (Generate Speech)</span>
+              </button>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Audio Player & Waveform Visualizer -->
+        <div id="ttsAudioPlayerCard" class="rounded-3xl border border-slate-800 bg-slate-900/90 p-5 sm:p-6 shadow-2xl space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-2xl bg-brand-500/20 text-brand-400 flex items-center justify-center shrink-0">
+                <i data-lucide="music" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <h4 id="playerTrackTitle" class="font-bold text-white text-xs sm:text-sm font-khmer">សំឡេងមិនទាន់បានបង្កើត (No Audio Generated)</h4>
+                <p id="playerTrackMeta" class="text-[11px] text-slate-400 font-khmer">ជ្រើសរើសសំឡេង និងចុច Generate ដើម្បីស្ដាប់</p>
+              </div>
+            </div>
+
+            <!-- Export Buttons -->
+            <div class="flex items-center gap-2">
+              <button id="btnDownloadWav" onclick="downloadCurrentAudio('wav')" disabled class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-semibold text-white flex items-center gap-1.5 transition">
+                <i data-lucide="download" class="w-4 h-4"></i>
+                <span>Download WAV</span>
+              </button>
+              <button onclick="saveAudioToLibrary()" id="btnSaveToLibrary" disabled class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed text-slate-300 hover:text-white transition" title="Save to Audio Library">
+                <i data-lucide="bookmark" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Waveform Canvas -->
+          <div class="relative w-full h-16 bg-slate-950 rounded-2xl overflow-hidden border border-slate-800/80 flex items-center px-4">
+            <canvas id="waveformCanvas" class="w-full h-full block"></canvas>
+          </div>
+
+          <!-- Player Controls Bar -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1">
+            <div class="flex items-center gap-3">
+              <button id="playerPlayPauseBtn" onclick="togglePlayerPlayback()" disabled class="w-10 h-10 rounded-full bg-brand-500 hover:bg-brand-400 disabled:opacity-40 text-white flex items-center justify-center shadow-lg transition">
+                <i data-lucide="play" class="w-5 h-5 ml-0.5"></i>
+              </button>
+              <button onclick="restartPlayerPlayback()" class="p-2 rounded-lg text-slate-400 hover:text-white transition">
+                <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+              </button>
+              <span id="playerTimeDisplay" class="text-xs font-mono text-slate-400">00:00 / 00:00</span>
+            </div>
+
+            <!-- Interactive Seek Slider -->
+            <div class="flex-1 mx-2 sm:mx-6 flex items-center gap-2">
+              <input type="range" id="playerSeekSlider" min="0" max="100" value="0" step="0.5" disabled class="w-full accent-brand-500 h-1.5 bg-slate-800 rounded-lg cursor-pointer">
+            </div>
+
+            <!-- Volume and Loop -->
+            <div class="flex items-center gap-3">
+              <button id="playerLoopBtn" onclick="togglePlayerLoop()" class="p-2 rounded-lg text-slate-400 hover:text-white transition" title="Loop Audio">
+                <i data-lucide="repeat" class="w-4 h-4"></i>
+              </button>
+              <div class="flex items-center gap-1.5">
+                <i data-lucide="volume-2" class="w-4 h-4 text-slate-400"></i>
+                <input type="range" id="playerVolumeSlider" min="0" max="1" step="0.05" value="1" class="w-16 sm:w-20 accent-brand-500 h-1 bg-slate-800 rounded-lg">
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3. DOCUMENT TO SPEECH (📁) -->
+    <section id="view-doc2speech" class="view-section py-8 hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        
+        <div>
+          <h1 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2.5">
+            <span class="p-2 rounded-xl bg-accent-teal/20 text-accent-teal border border-accent-teal/30">
+              <i data-lucide="file-text" class="w-5 h-5"></i>
+            </span>
+            <span>Document to Speech</span>
+          </h1>
+          <p class="text-xs text-slate-400 font-khmer mt-1">ទាញយកអត្ថបទពីឯកសារ TXT, DOCX, ឬ PDF រួចបម្លែងជាសំឡេងខ្មែរដោយស្វ័យប្រវត្តិ</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          
+          <!-- Dropzone -->
+          <div class="lg:col-span-5 space-y-4">
+            <div id="dropZone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleFileDrop(event)" class="border-2 border-dashed border-slate-800 hover:border-brand-500 rounded-3xl bg-slate-900/60 p-8 text-center transition flex flex-col items-center justify-center gap-3 cursor-pointer group">
+              <input type="file" id="docFileInput" accept=".txt,.pdf,.docx" class="hidden" onchange="handleFileSelect(event)">
+              <div class="w-14 h-14 rounded-2xl bg-slate-800 text-brand-400 flex items-center justify-center group-hover:scale-110 transition">
+                <i data-lucide="upload-cloud" class="w-7 h-7"></i>
+              </div>
+              <div>
+                <p class="text-xs sm:text-sm font-semibold text-white font-khmer">ចុចដើម្បីជ្រើសរើស ឬអូសឯកសារទម្លាក់នៅទីនេះ</p>
+                <p class="text-[11px] text-slate-400 mt-1">គាំទ្រ: TXT, PDF, Word (.DOCX)</p>
+              </div>
+              <button type="button" onclick="document.getElementById('docFileInput').click()" class="mt-2 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 transition">
+                Browse Files
+              </button>
+            </div>
+
+            <!-- Upload File Status -->
+            <div id="fileInfoCard" class="hidden rounded-2xl border border-slate-800 bg-slate-900 p-4 space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <i data-lucide="file-check" class="w-5 h-5 text-emerald-400"></i>
+                  <div>
+                    <h5 id="loadedFileName" class="text-xs font-semibold text-white truncate max-w-[200px]">document.txt</h5>
+                    <p id="loadedFileSize" class="text-[10px] text-slate-400">12.4 KB</p>
+                  </div>
+                </div>
+                <button onclick="resetDocUpload()" class="p-1 rounded text-slate-400 hover:text-rose-400">
+                  <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+              </div>
+              <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                <div class="bg-accent-teal h-full w-full"></div>
+              </div>
+            </div>
+
+            <!-- Conversion Action -->
+            <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 space-y-3">
+              <h4 class="text-xs font-semibold text-slate-300 font-khmer">ការកំណត់សម្រាប់ឯកសារ</h4>
+              <div class="space-y-2 text-xs font-khmer">
+                <label class="flex items-center gap-2 text-slate-300">
+                  <input type="checkbox" checked class="rounded accent-brand-500">
+                  <span>រំលងលេខទំព័រស្វ័យប្រវត្តិ (Skip Page Numbers)</span>
+                </label>
+                <label class="flex items-center gap-2 text-slate-300">
+                  <input type="checkbox" checked class="rounded accent-brand-500">
+                  <span>សម្រួលដកឃ្លាខ្មែរ (Auto-fix Khmer Spaces)</span>
+                </label>
+              </div>
+              <button id="docGenAudioBtn" onclick="sendExtractedTextToStudio()" disabled class="w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-500 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-semibold text-white flex items-center justify-center gap-2 transition font-khmer">
+                <i data-lucide="arrow-right-circle" class="w-4 h-4"></i>
+                <span>បញ្ជូនទៅកាន់ TTS Studio ដើម្បីបំប្លែងសំឡេង</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Extracted Text Area -->
+          <div class="lg:col-span-7 space-y-3">
+            <div class="rounded-3xl border border-slate-800 bg-slate-900/80 p-5 shadow-xl flex flex-col h-[520px]">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-800 text-xs text-slate-400">
+                <div class="flex items-center gap-2 font-khmer">
+                  <span class="font-semibold text-slate-200">Extracted Text Preview</span>
+                  <span id="docCharCount" class="text-[11px] text-slate-500">(0 Characters)</span>
+                </div>
+                <button onclick="copyExtractedText()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition text-xs flex items-center gap-1 font-khmer">
+                  <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copy
+                </button>
+              </div>
+              
+              <textarea id="extractedTextPreview" class="w-full flex-1 bg-transparent py-4 text-slate-100 placeholder-slate-600 focus:outline-none font-khmer text-sm leading-relaxed resize-none" placeholder="អត្ថបទដែលបានស្រង់ចេញពីឯកសារនឹងបង្ហាញនៅទីនេះ..."></textarea>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 4. AUDIO LIBRARY (🎧) -->
+    <section id="view-library" class="view-section py-8 hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+          <div>
+            <h1 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2.5">
+              <span class="p-2 rounded-xl bg-purple-500/20 text-purple-400 border border-purple-500/30">
+                <i data-lucide="library" class="w-5 h-5"></i>
+              </span>
+              <span>Audio Library</span>
+            </h1>
+            <p class="text-xs text-slate-400 font-khmer mt-1">គ្រប់គ្រង ស្ដាប់ឡើងវិញ ទាញយក និងរៀបចំឯកសារសំឡេងដែលបានបង្កើត</p>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <button onclick="clearAllLibrary()" class="px-3 py-1.5 rounded-xl border border-slate-800 hover:border-rose-900 bg-slate-900/60 hover:bg-rose-950/30 text-rose-400 text-xs font-medium transition font-khmer">
+              សម្អាតទាំងអស់
+            </button>
+            <button onclick="navigateTo('tts')" class="px-4 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold flex items-center gap-1.5 transition font-khmer">
+              <i data-lucide="plus" class="w-4 h-4"></i> បង្កើតថ្មី
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="relative">
+            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-slate-500"></i>
+            <input type="text" id="libSearchInput" oninput="renderAudioLibrary()" placeholder="ស្វែងរកតាមចំណងជើង..." class="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-brand-500 font-khmer">
+          </div>
+          
+          <select id="libFilterVoice" onchange="renderAudioLibrary()" class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-brand-500 font-khmer">
+            <option value="all">តម្រងសំឡេងទាំងអស់ (All Voices)</option>
+            <option value="sophea">សុភា (Sophea)</option>
+            <option value="dara">តារា (Dara)</option>
+            <option value="bopha">បុប្ផា (Bopha)</option>
+            <option value="piseth">ពិសិដ្ឋ (Piseth)</option>
+          </select>
+
+          <select id="libSortOrder" onchange="renderAudioLibrary()" class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-brand-500 font-khmer">
+            <option value="newest">ថ្មីបំផុតមុន (Newest First)</option>
+            <option value="oldest">ចាស់បំផុតមុន (Oldest First)</option>
+          </select>
+        </div>
+
+        <!-- Library Items List -->
+        <div id="libraryContainer" class="space-y-3">
+          <!-- Injected dynamically -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 5. DASHBOARD (📊) -->
+    <section id="view-dashboard" class="view-section py-8 hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        
+        <div>
+          <h1 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2.5">
+            <span class="p-2 rounded-xl bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
+              <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+            </span>
+            <span>Usage Dashboard</span>
+          </h1>
+          <p class="text-xs text-slate-400 font-khmer mt-1">ស្ថិតិនៃការបម្លែងសំឡេង កូតាតួអក្សរប្រចាំខែ និងសកម្មភាពចុងក្រោយ</p>
+        </div>
+
+        <!-- Metrics Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="p-5 rounded-2xl bg-slate-900/80 border border-slate-800">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-medium text-slate-400">Total Generations</span>
+              <span class="p-2 rounded-lg bg-brand-500/10 text-brand-400"><i data-lucide="activity" class="w-4 h-4"></i></span>
+            </div>
+            <p id="dashTotalGen" class="text-2xl font-bold text-white mt-2">28</p>
+            <span class="text-[11px] text-emerald-400 flex items-center gap-1 mt-1 font-khmer"><i data-lucide="trending-up" class="w-3 h-3"></i> +15% ពីសប្ដាហ៍មុន</span>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-slate-900/80 border border-slate-800">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-medium text-slate-400">Characters Used</span>
+              <span class="p-2 rounded-lg bg-accent-teal/10 text-accent-teal"><i data-lucide="type" class="w-4 h-4"></i></span>
+            </div>
+            <p id="dashCharsUsed" class="text-2xl font-bold text-white mt-2">24,310</p>
+            <div class="w-full bg-slate-800 h-1.5 rounded-full mt-3 overflow-hidden">
+              <div id="dashQuotaBar" class="bg-accent-teal h-full" style="width: 48%"></div>
+            </div>
+            <span class="text-[10px] text-slate-500 mt-1 block font-khmer">48% នៃកូតាឥតគិតថ្លៃ (50,000 តួ)</span>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-slate-900/80 border border-slate-800">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-medium text-slate-400">Audio Generated</span>
+              <span class="p-2 rounded-lg bg-emerald-500/10 text-emerald-400"><i data-lucide="clock" class="w-4 h-4"></i></span>
+            </div>
+            <p id="dashAudioMinutes" class="text-2xl font-bold text-white mt-2">56.2 min</p>
+            <span class="text-[11px] text-slate-400 mt-1 block font-khmer">រយៈពេលសរុបនៃសំឡេង</span>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-slate-900/80 border border-slate-800">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-medium text-slate-400">Current Plan</span>
+              <span class="p-2 rounded-lg bg-amber-500/10 text-amber-400"><i data-lucide="award" class="w-4 h-4"></i></span>
+            </div>
+            <p class="text-2xl font-bold text-white mt-2">Pro Tier</p>
+            <span class="text-[11px] text-brand-400 mt-1 block cursor-pointer hover:underline font-khmer" onclick="navigateTo('pricing')">ដំឡើងកញ្ចប់ Enterprise &rarr;</span>
+          </div>
+        </div>
+
+        <!-- Activity and Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div class="lg:col-span-7 rounded-3xl border border-slate-800 bg-slate-900/70 p-5 space-y-4">
+            <h3 class="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
+              <i data-lucide="history" class="w-4 h-4 text-brand-400"></i>
+              <span>Recent Activity Timeline</span>
+            </h3>
+            
+            <div class="space-y-3" id="dashActivityList">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 rounded-3xl border border-slate-800 bg-slate-900/70 p-5 space-y-4">
+            <h3 class="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
+              <i data-lucide="pie-chart" class="w-4 h-4 text-accent-teal"></i>
+              <span>Voice Usage Distribution</span>
+            </h3>
+
+            <div class="space-y-3 pt-2">
+              <div>
+                <div class="flex justify-between text-xs text-slate-300 mb-1 font-khmer">
+                  <span>សុភា (Sophea - News)</span>
+                  <span class="font-mono">55%</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div class="bg-brand-500 h-full w-[55%]"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs text-slate-300 mb-1 font-khmer">
+                  <span>ដារ៉ា (Dara - Audiobook)</span>
+                  <span class="font-mono">27%</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div class="bg-indigo-400 h-full w-[27%]"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs text-slate-300 mb-1 font-khmer">
+                  <span>ពិសិដ្ឋ (Piseth - Commercial)</span>
+                  <span class="font-mono">12%</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div class="bg-amber-400 h-full w-[12%]"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs text-slate-300 mb-1 font-khmer">
+                  <span>បុប្ផា (Bopha - Calm)</span>
+                  <span class="font-mono">6%</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div class="bg-pink-400 h-full w-[6%]"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 6. MY ACCOUNT (👤) -->
+    <section id="view-account" class="view-section py-8 hidden">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        
+        <div>
+          <h1 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2.5">
+            <span class="p-2 rounded-xl bg-slate-800 text-slate-300 border border-slate-700">
+              <i data-lucide="user" class="w-5 h-5"></i>
+            </span>
+            <span>My Account & Settings</span>
+          </h1>
+          <p class="text-xs text-slate-400 font-khmer mt-1">គ្រប់គ្រងព័ត៌មានផ្ទាល់ខ្លួន កូនសោ API និងការកំណត់គណនី</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          <div class="p-6 rounded-3xl border border-slate-800 bg-slate-900/80 space-y-4 text-center">
+            <div class="w-20 h-20 mx-auto rounded-full bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
+              KV
+            </div>
+
+            <div>
+              <h3 id="accNameDisplay" class="font-bold text-white text-base">Khmer Creator</h3>
+              <p id="accEmailDisplay" class="text-xs text-slate-400">creator@khmervoice.ai</p>
+              <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30 text-[11px] font-semibold">Pro Plan User</span>
+            </div>
+
+            <div class="border-t border-slate-800 pt-4 text-left space-y-2 text-xs text-slate-400 font-khmer">
+              <div class="flex justify-between">
+                <span>កាលបរិច្ឆេទចូលរួម:</span>
+                <span class="text-slate-200">តុលា 2026</span>
+              </div>
+              <div class="flex justify-between">
+                <span>តំបន់ Server (Region):</span>
+                <span class="text-slate-200">Phnom Penh Node</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="md:col-span-2 space-y-6">
+            <!-- API Key -->
+            <div class="p-6 rounded-3xl border border-slate-800 bg-slate-900/80 space-y-4">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h4 class="font-bold text-white text-sm">Developer API Key</h4>
+                  <p class="text-xs text-slate-400 font-khmer">ប្រើសម្រាប់តភ្ជាប់ប្រព័ន្ធ TTS ចូលទៅក្នុង Mobile App ឬ Website</p>
+                </div>
+                <button onclick="generateNewApiKey()" class="px-3 py-1 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 transition font-khmer">
+                  បង្កើត Key ថ្មី
+                </button>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <input type="password" id="apiKeyDisplay" readonly value="kva_live_98f74a01e3b52d908c6" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-mono text-brand-300 focus:outline-none">
+                <button onclick="toggleApiKeyVisibility()" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition" title="Show/Hide">
+                  <i data-lucide="eye" class="w-4 h-4"></i>
+                </button>
+                <button onclick="copyApiKey()" class="p-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white transition" title="Copy Key">
+                  <i data-lucide="copy" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Preferences -->
+            <div class="p-6 rounded-3xl border border-slate-800 bg-slate-900/80 space-y-4">
+              <h4 class="font-bold text-white text-sm">Preferences & Notifications</h4>
+              
+              <div class="space-y-3 text-xs font-khmer">
+                <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-950 border border-slate-800">
+                  <span class="text-slate-300">ការជូនដំណឹងពេលជិតអស់កូតាប្រចាំខែ (Quota Alert)</span>
+                  <input type="checkbox" checked class="accent-brand-500">
+                </label>
+                <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-950 border border-slate-800">
+                  <span class="text-slate-300">ទាញយកឯកសារជាទម្រង់ WAV គុណភាពខ្ពស់ដោយស្វ័យប្រវត្តិ</span>
+                  <input type="checkbox" checked class="accent-brand-500">
+                </label>
+              </div>
+
+              <div class="pt-2 flex justify-end">
+                <button onclick="showToast('បានរក្សាទុក', 'Preferences saved successfully')" class="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold transition font-khmer">
+                  រក្សាទុកការកែប្រែ (Save Changes)
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 7. PRICING (💳) -->
+    <section id="view-pricing" class="view-section py-10 hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+        
+        <div class="text-center max-w-2xl mx-auto">
+          <h1 class="text-2xl sm:text-4xl font-extrabold text-white font-khmer" data-i18n="pricing_title">កញ្ចប់តម្លៃសាមញ្ញ និងសមរម្យ</h1>
+          <p class="text-slate-400 font-khmer text-xs sm:text-sm mt-3" data-i18n="pricing_sub">ជ្រើសរើសកញ្ចប់ដែលស័ក្តិសមបំផុតសម្រាប់តម្រូវការរបស់អ្នក អាចប្តូរ ឬផ្អាកបានគ្រប់ពេល</p>
+
+          <!-- Currency Switcher -->
+          <div class="mt-6 inline-flex items-center gap-2 p-1.5 rounded-2xl bg-slate-900 border border-slate-800">
+            <button id="currencyUsdBtn" onclick="setPricingCurrency('USD')" class="px-4 py-1.5 rounded-xl text-xs font-semibold bg-brand-600 text-white transition">USD ($)</button>
+            <button id="currencyKhrBtn" onclick="setPricingCurrency('KHR')" class="px-4 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition font-khmer">KHR (រៀល)</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          <!-- Free Tier -->
+          <div class="p-8 rounded-3xl border border-slate-800 bg-slate-900/60 flex flex-col justify-between hover:border-slate-700 transition">
+            <div class="space-y-4">
+              <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Free Starter</span>
+              <h3 class="text-xl font-bold text-white font-khmer">សាកល្បងឥតគិតថ្លៃ</h3>
+              <p class="text-xs text-slate-400 font-khmer">ល្អសម្រាប់ការសាកល្បងគុណភាព និងការប្រើប្រាស់ផ្ទាល់ខ្លួនកម្រិតស្រាល។</p>
+              
+              <div class="pt-4">
+                <span id="priceFreeVal" class="text-4xl font-extrabold text-white">$0</span>
+                <span class="text-xs text-slate-500 font-khmer">/ រហូត</span>
+              </div>
+
+              <ul class="space-y-3 pt-4 border-t border-slate-800/80 text-xs text-slate-300 font-khmer">
+                <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> 10,000 តួអក្សរក្នុងមួយខែ</li>
+                <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> សំឡេងខ្មែរគំរូ 2 រូប (Sophea, Dara)</li>
+                <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> ទាញយកជា WAV Audio</li>
+              </ul>
+            </div>
+
+            <button onclick="navigateTo('tts')" class="mt-8 w-full py-3 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-white font-semibold text-xs transition font-khmer">
+              ចាប់ផ្ដើមប្រើឥតគិតថ្លៃ
+            </button>
+          </div>
+
+          <!-- Pro Tier -->
+          <div class="p-8 rounded-3xl border-2 border-brand-500 bg-slate-900/90 flex flex-col justify-between relative shadow-2xl shadow-brand-500/20">
+            <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-brand-500 text-white text-[10px] font-bold uppercase tracking-wider font-khmer">
+              ពេញនិយមបំផុត (Popular)
+            </div>
+
+            <div class="space-y-4">
+              <span class="text-xs font-bold text-brand-400 uppercase tracking-wider">Pro Creator</span>
+              <h3 class="text-xl font-bold text-white font-khmer">អាជីព (Professional)</h3>
+              <p class="text-xs text-slate-400 font-khmer">សម្រាប់ YouTubers, Podcasters និងស្ថាប័នអប់រំផលិតមាតិកាជាប្រចាំ។</p>
+              
+              <div class="pt-4">
+                <span id="priceProVal" class="text-4xl font-extrabold text-white">$12</span>
+                <span class="text-xs text-slate-400 font-khmer">/ ខែ</span>
+              </div>
+
+              <ul class="space-y-3 pt-4 border-t border-slate-800/80 text-xs text-slate-300 font-khmer">
+                <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> 250,000 តួអក្សរក្នុងមួយខែ</li>
+                <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> សំឡេងខ្មែរ Neural ទាំងអស់</li>
+                <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> គុណភាព Studio Lossless WAV</li>
+                <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Upload ឯកសារ PDF/DOCX គ្មានដែនកំណត់</li>
+                <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> សិទ្ធិប្រើប្រាស់ពាណិជ្ជកម្ម (Commercial Rights)</li>
+              </ul>
+            </div>
+
+            <button onclick="upgradePlanNotice('Pro')" class="mt-8 w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs shadow-lg shadow-brand-600/30 transition font-khmer">
+              ជ្រើសរើសកញ្ចប់ Pro ឥឡូវនេះ
+            </button>
+          </div>
+
+          <!-- Enterprise Tier -->
+          <div class="p-8 rounded-3xl border border-slate-800 bg-slate-900/60 flex flex-col justify-between hover:border-slate-700 transition">
+            <div class="space-y-4">
+              <span class="text-xs font-bold text-accent-teal uppercase tracking-wider">Enterprise Scale</span>
+              <h3 class="text-xl font-bold text-white font-khmer">ក្រុមហ៊ុន & ស្ថាប័ន</h3>
+              <p class="text-xs text-slate-400 font-khmer">សម្រាប់ Call Center, ធនាគារ, និងក្រុមហ៊ុនសារព័ត៌មានខ្នាតធំ។</p>
+              
+              <div class="pt-4">
+                <span id="priceEntVal" class="text-4xl font-extrabold text-white">$49</span>
+                <span class="text-xs text-slate-400 font-khmer">/ ខែ</span>
+              </div>
+
+              <ul class="space-y-3 pt-4 border-t border-slate-800/80 text-xs text-slate-300 font-khmer">
+                <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> 1,500,000 តួអក្សរក្នុងមួយខែ</li>
+                <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> REST API Access & Ultra-low Latency</li>
+                <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> ជំនួយបច្ចេកទេស 24/7 SLA 99.9%</li>
+              </ul>
+            </div>
+
+            <button onclick="upgradePlanNotice('Enterprise')" class="mt-8 w-full py-3 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-white font-semibold text-xs transition font-khmer">
+              ទាក់ទងផ្នែកលក់ (Contact Sales)
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 8. DOCUMENTATION (📚) -->
+    <section id="view-docs" class="view-section py-8 hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        
+        <div>
+          <h1 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2.5">
+            <span class="p-2 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
+              <i data-lucide="book-open" class="w-5 h-5"></i>
+            </span>
+            <span>Documentation & API Reference</span>
+          </h1>
+          <p class="text-xs text-slate-400 font-khmer mt-1">ការណែនាំការប្រើប្រាស់ ទម្រង់ឯកសារ និងគំរូកូដសម្រាប់ Developer</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          
+          <div class="lg:col-span-3 space-y-2">
+            <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-3 space-y-1 text-xs">
+              <a href="#doc-start" class="block px-3 py-2 rounded-xl bg-slate-800 text-white font-semibold">1. Getting Started</a>
+              <a href="#doc-formats" class="block px-3 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60">2. Supported Formats</a>
+              <a href="#doc-api" class="block px-3 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60">3. REST API Integration</a>
+              <a href="#doc-faq" class="block px-3 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 font-khmer">4. FAQs (សំណួរញឹកញាប់)</a>
+            </div>
+          </div>
+
+          <div class="lg:col-span-9 space-y-6">
+            
+            <div id="doc-start" class="p-6 rounded-3xl border border-slate-800 bg-slate-900/70 space-y-3">
+              <h3 class="text-base font-bold text-white">1. ចាប់ផ្ដើមដំបូង (Getting Started)</h3>
+              <p class="text-xs text-slate-300 font-khmer leading-relaxed">
+                KHMER VOICE AI ផ្ដល់នូវបច្ចេកវិទ្យាបញ្ចេញសំឡេងអត្ថបទខ្មែរ ដោយប្រើប្រាស់ប្រព័ន្ធសំយោគសំឡេងសូរសព្ទ Khmer Phonetic Synthesizer និងបណ្ដាញ Neural Network។ ប្រព័ន្ធនេះស្គាល់ពាក្យ ស្រៈនិស្ស័យ ស្រៈពេញតួ ជើងអក្សរ និងសញ្ញាខណ្ឌក្នុងភាសាខ្មែរបានយ៉ាងត្រឹមត្រូវ។
+              </p>
+            </div>
+
+            <div id="doc-formats" class="p-6 rounded-3xl border border-slate-800 bg-slate-900/70 space-y-3">
+              <h3 class="text-base font-bold text-white">2. ទម្រង់ឯកសារដែលគាំទ្រ (Supported Formats)</h3>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-khmer">
+                <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800">
+                  <h4 class="font-bold text-brand-400 mb-1">ឯកសារអត្ថបទចូល (Input)</h4>
+                  <p class="text-slate-400">TXT (Plain UTF-8 text), DOCX (Microsoft Word), PDF (Portable Document Format)។</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800">
+                  <h4 class="font-bold text-emerald-400 mb-1">ឯកសារសំឡេងចេញ (Output)</h4>
+                  <p class="text-slate-400">WAV (Uncompressed 44.1kHz PCM Audio) គាំទ្រគ្រប់ឧបករណ៍។</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- API Reference & Code Snippets -->
+            <div id="doc-api" class="p-6 rounded-3xl border border-slate-800 bg-slate-900/70 space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 class="text-base font-bold text-white">3. REST API Integration</h3>
+                <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">POST /v1/tts/synthesize</span>
+              </div>
+
+              <div class="space-y-2">
+                <div class="flex items-center gap-2 border-b border-slate-800 pb-2">
+                  <button onclick="switchCodeSnippet('curl')" id="btnTabCurl" class="px-3 py-1 rounded-lg bg-slate-800 text-white text-xs font-mono font-medium">cURL</button>
+                  <button onclick="switchCodeSnippet('python')" id="btnTabPython" class="px-3 py-1 rounded-lg text-slate-400 hover:text-white text-xs font-mono font-medium">Python</button>
+                  <button onclick="switchCodeSnippet('node')" id="btnTabNode" class="px-3 py-1 rounded-lg text-slate-400 hover:text-white text-xs font-mono font-medium">Node.js</button>
+                </div>
+
+                <div class="relative">
+                  <pre id="codeSnippetBox" class="bg-slate-950 p-4 rounded-2xl text-xs font-mono text-slate-300 overflow-x-auto border border-slate-800 leading-relaxed"></pre>
+                  <button onclick="copyCurrentCodeSnippet()" class="absolute top-3 right-3 p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition">
+                    <i data-lucide="copy" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQ Accordion -->
+            <div id="doc-faq" class="p-6 rounded-3xl border border-slate-800 bg-slate-900/70 space-y-3 font-khmer">
+              <h3 class="text-base font-bold text-white">4. សំណួរដែលសួរញឹកញាប់ (FAQ)</h3>
+              
+              <div class="space-y-2 text-xs">
+                <details class="p-3 rounded-2xl bg-slate-950 border border-slate-800 cursor-pointer">
+                  <summary class="font-semibold text-white">តើខ្ញុំអាចទាញយក និង Deploy វេបសាយនេះលើ GitHub Pages បានទេ?</summary>
+                  <p class="mt-2 text-slate-400 leading-relaxed">
+                    បាទ/ចាស បាន! ឯកសារនេះជា Single-File HTML គ្មាន dependency ខាងក្រៅឡើយ។ គ្រាន់តែ Save ជា `index.html` ហើយទាញទម្លាក់ចូល GitHub Repository រួចបើក GitHub Pages គឺដំណើរការភ្លាមៗ។
+                  </p>
+                </details>
+
+                <details class="p-3 rounded-2xl bg-slate-950 border border-slate-800 cursor-pointer">
+                  <summary class="font-semibold text-white">តើខ្ញុំអាចប្រើសំឡេងដែលបង្កើតទៅលើ YouTube ឬ TikTok រកប្រាក់ចំណូលបានដែរឬទេ?</summary>
+                  <p class="mt-2 text-slate-400 leading-relaxed">
+                    បាទ/ចាស បាន! រាល់សំឡេងដែលបង្កើតឡើងតាមរយៈគណនី Pro និង Enterprise ផ្ដល់សិទ្ធិ Commercial Rights 100%។
+                  </p>
+                </details>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 9. ADMIN PANEL (⚙️) -->
+    <section id="view-admin" class="view-section py-8 hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+          <div>
+            <h1 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2.5">
+              <span class="p-2 rounded-xl bg-rose-500/20 text-rose-400 border border-rose-500/30">
+                <i data-lucide="shield-check" class="w-5 h-5"></i>
+              </span>
+              <span>KHMER VOICE AI • Admin Control Center</span>
+            </h1>
+            <p class="text-xs text-slate-400 font-khmer mt-1">គ្រប់គ្រងអ្នកប្រើប្រាស់ ម៉ូឌែលសំឡេង សុខភាព Server TTS និងកំណត់ត្រាកំហុស</p>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs border border-emerald-500/30">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              All Nodes Operational
+            </span>
+          </div>
+        </div>
+
+        <!-- Metrics Overview -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
+            <span class="text-xs text-slate-400">Total Registered Users</span>
+            <p class="text-xl font-bold text-white mt-1">1,438</p>
+            <span class="text-[10px] text-emerald-400">+52 today</span>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
+            <span class="text-xs text-slate-400">TTS Requests (24h)</span>
+            <p class="text-xl font-bold text-white mt-1">89,204</p>
+            <span class="text-[10px] text-slate-400">Avg Latency: 110ms</span>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
+            <span class="text-xs text-slate-400">Active Voice Models</span>
+            <p class="text-xl font-bold text-white mt-1">4 Neural Models</p>
+            <span class="text-[10px] text-brand-400">Khmer Acoustic v2.4</span>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
+            <span class="text-xs text-slate-400">Error Rate</span>
+            <p class="text-xl font-bold text-emerald-400 mt-1">0.01%</p>
+            <span class="text-[10px] text-slate-400">Uptime: 99.99%</span>
+          </div>
+        </div>
+
+        <!-- User Table -->
+        <div class="p-6 rounded-3xl border border-slate-800 bg-slate-900/80 space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <h3 class="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
+              <i data-lucide="users" class="w-4 h-4 text-brand-400"></i>
+              <span>User Management (អ្នកប្រើប្រាស់)</span>
+            </h3>
+            <input type="text" id="adminUserSearch" oninput="filterAdminUsers()" placeholder="ស្វែងរកតាម Email ឬ ឈ្មោះ..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-brand-500 font-khmer">
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-300">
+              <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
+                <tr>
+                  <th class="p-3">User</th>
+                  <th class="p-3">Plan</th>
+                  <th class="p-3">Characters Used</th>
+                  <th class="p-3">Status</th>
+                  <th class="p-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminUserTableBody" class="divide-y divide-slate-800/60 font-khmer">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Live Server Audit Logs -->
+        <div class="p-6 rounded-3xl border border-slate-800 bg-slate-900/80 space-y-4">
+          <h3 class="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
+            <i data-lucide="terminal" class="w-4 h-4 text-amber-400"></i>
+            <span>Live System & Generation Audit Logs</span>
+          </h3>
+
+          <div class="bg-slate-950 rounded-2xl p-4 border border-slate-800 h-56 overflow-y-auto font-mono text-[11px] text-slate-400 space-y-1.5" id="adminLogBox">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 🔐 AUTHENTICATION MODAL -->
+  <div id="authModal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-8 relative shadow-2xl space-y-6">
+      <button onclick="closeAuthModal()" class="absolute top-4 right-4 p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <!-- Auth Header -->
+      <div class="text-center space-y-1">
+        <div class="w-12 h-12 rounded-2xl bg-brand-600/20 text-brand-400 flex items-center justify-center mx-auto mb-2">
+          <i data-lucide="lock" class="w-6 h-6"></i>
+        </div>
+        <h3 id="authModalTitle" class="text-lg font-bold text-white font-khmer">ចូលប្រើប្រាស់ KHMER VOICE AI</h3>
+        <p id="authModalSub" class="text-xs text-slate-400 font-khmer">ចូលគណនីរបស់អ្នកដើម្បីគ្រប់គ្រងសំឡេង និង API Keys</p>
+      </div>
+
+      <!-- Google Mock Login -->
+      <button onclick="handleGoogleAuth()" class="w-full py-2.5 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-800 text-slate-200 text-xs font-semibold flex items-center justify-center gap-2 transition">
+        <svg class="w-4 h-4" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+        </svg>
+        <span class="font-khmer">បន្តជាមួយ Google (Continue with Google)</span>
+      </button>
+
+      <div class="relative flex items-center justify-center">
+        <div class="border-t border-slate-800 w-full"></div>
+        <span class="bg-slate-900 px-3 text-[11px] text-slate-500 uppercase tracking-wider absolute font-khmer">ឬ អ៊ីមែល</span>
+      </div>
+
+      <!-- Auth Form -->
+      <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4 text-left">
+        <div id="authNameField" class="hidden">
+          <label class="block text-xs text-slate-400 mb-1 font-khmer">ឈ្មោះពេញ (Full Name)</label>
+          <input type="text" id="authNameInput" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-brand-500 font-khmer" placeholder="ឧ. ចាន់ សុខា">
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-400 mb-1 font-khmer">អ៊ីមែល (Email Address)</label>
+          <input type="email" id="authEmailInput" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-brand-500" placeholder="your@email.com">
+        </div>
+
+        <div id="authPassField">
+          <div class="flex items-center justify-between mb-1">
+            <label class="text-xs text-slate-400 font-khmer">ពាក្យសម្ងាត់ (Password)</label>
+            <button type="button" onclick="setAuthMode('forgot')" class="text-[11px] text-brand-400 hover:underline font-khmer">ភ្លេចពាក្យសម្ងាត់?</button>
+          </div>
+          <input type="password" id="authPassInput" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-brand-500" placeholder="••••••••">
+        </div>
+
+        <button type="submit" id="authSubmitBtn" class="w-full py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs transition shadow-lg shadow-brand-500/25 font-khmer">
+          ចូលប្រើប្រាស់ (Login)
+        </button>
+      </form>
+
+      <div class="text-center text-xs text-slate-400 font-khmer">
+        <span id="authToggleText">មិនទាន់មានគណនីមែនទេ?</span>
+        <button id="authToggleBtn" onclick="toggleAuthMode()" class="text-brand-400 font-semibold hover:underline ml-1">ចុះឈ្មោះទីនេះ</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Rename Modal -->
+  <div id="renameModal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl">
+      <h4 class="font-bold text-white text-sm font-khmer">ប្ដូរឈ្មោះឯកសារសំឡេង (Rename Audio)</h4>
+      <input type="text" id="renameInput" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-brand-500 font-khmer">
+      <div class="flex justify-end gap-2 font-khmer">
+        <button onclick="closeRenameModal()" class="px-3 py-1.5 rounded-xl text-xs text-slate-400 hover:text-white">បោះបង់</button>
+        <button onclick="confirmRenameAudio()" class="px-4 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold">រក្សាទុក</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800/80 bg-slate-950 py-8 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      
+      <div class="flex items-center gap-3">
+        <div class="h-6 w-6 rounded-lg bg-brand-600 flex items-center justify-center text-white">
+          <i data-lucide="waves" class="w-3.5 h-3.5"></i>
+        </div>
+        <span class="font-semibold text-slate-300">KHMER VOICE AI (សំឡេងខ្មែរ AI)</span>
+        <span>© 2026. Deploy Ready.</span>
+      </div>
+
+      <div class="flex items-center gap-5 font-khmer">
+        <button onclick="navigateTo('docs')" class="hover:text-slate-300 transition">ឯកសារជំនួយ</button>
+        <button onclick="navigateTo('pricing')" class="hover:text-slate-300 transition">កញ្ចប់តម្លៃ</button>
+        <button onclick="navigateTo('admin')" class="hover:text-slate-300 transition">Admin</button>
+        <span class="text-slate-700">|</span>
+        <span class="text-brand-400">Made with ❤️ for Cambodia</span>
+      </div>
+
+    </div>
+  </footer>
+
+  <script>
+    /* ==========================================================================
+       APP STATE & STORAGE
+       ========================================================================== */
+    const STORAGE_KEY_AUTH = 'kva_user_session';
+    const STORAGE_KEY_LIB = 'kva_audio_library';
+    const STORAGE_KEY_LOGS = 'kva_admin_logs';
+
+    let appState = {
+      lang: 'km',
+      currentView: 'home',
+      currency: 'USD',
+      user: null,
+      audioLibrary: [],
+      adminLogs: [],
+      tts: {
+        voice: 'sophea',
+        speed: 1.0,
+        pitch: 1.0,
+        volume: 1.0,
+        style: 'neutral',
+        isPlaying: false,
+        duration: 0,
+        currentTime: 0,
+        currentBlob: null,
+        currentUrl: null,
+        loop: false
+      },
+      authMode: 'login'
+    };
+
+    const KHMER_VOICES = {
+      sophea: { name: 'សុភា (Sophea)', gender: 'female', basePitch: 1.15, baseRate: 0.95, freq: 230 },
+      dara:   { name: 'ដារ៉ា (Dara)',   gender: 'male',   basePitch: 0.90, baseRate: 0.92, freq: 130 },
+      bopha:  { name: 'បុប្ផា (Bopha)',  gender: 'female', basePitch: 1.25, baseRate: 0.88, freq: 260 },
+      piseth: { name: 'ពិសិដ្ឋ (Piseth)', gender: 'male',   basePitch: 0.98, baseRate: 1.05, freq: 145 }
+    };
+
+    /* ==========================================================================
+       ROUTING SYSTEM
+       ========================================================================== */
+    function navigateTo(viewId) {
+      const valid = ['home', 'tts', 'doc2speech', 'library', 'dashboard', 'account', 'pricing', 'docs', 'admin'];
+      if (!valid.includes(viewId)) viewId = 'home';
+      
+      appState.currentView = viewId;
+
+      document.querySelectorAll('.view-section').forEach(sec => sec.classList.add('hidden'));
+      const active = document.getElementById(`view-${viewId}`);
+      if (active) active.classList.remove('hidden');
+
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        if (btn.getAttribute('data-view') === viewId) {
+          btn.classList.add('bg-slate-800', 'text-white');
+          btn.classList.remove('text-slate-300');
+        } else {
+          btn.classList.remove('bg-slate-800', 'text-white');
+          btn.classList.add('text-slate-300');
+        }
+      });
+
+      document.getElementById('mobileMenu').classList.add('hidden');
+
+      if (viewId === 'library') renderAudioLibrary();
+      if (viewId === 'dashboard') updateDashboardMetrics();
+      if (viewId === 'admin') refreshAdminPanel();
+      if (viewId === 'tts') setTimeout(resizeWaveformCanvas, 100);
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleMobileMenu() {
+      document.getElementById('mobileMenu').classList.toggle('hidden');
+    }
+
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    /* ==========================================================================
+       LOCALIZATION
+       ========================================================================== */
+    const translations = {
+      km: {
+        nav_home: 'ទំព័រដើម',
+        nav_tts: 'Text to Speech',
+        nav_doc: 'Doc to Speech',
+        nav_library: 'បណ្ណាល័យសំឡេង',
+        nav_dashboard: 'Dashboard',
+        nav_pricing: 'កញ្ចប់តម្លៃ',
+        nav_docs: 'ឯកសារជំនួយ',
+        hero_badge: '✨ Khmer Neural Acoustic Engine 2.4 - Ready to Deploy',
+        hero_title_1: 'បច្ចេកវិទ្យាបំប្លែងអត្ថបទ',
+        hero_title_2: 'ទៅជាសំឡេងខ្មែរឆ្លាតវៃ និងធម្មជាតិបំផុត',
+        hero_desc: 'បង្កើតសំឡេងនិទានរឿង ព័ត៌មាន មេរៀន និងវីដេអូ TikTok/YouTube ជាភាសាខ្មែរយ៉ាងរលូន ដោយប្រើប្រព័ន្ធ AI Deep Acoustic ស្គាល់អក្សរខ្នាតស្ដង់ដារ ស្រៈ និងព្យញ្ជនៈច្បាស់លាស់ 100%។',
+        btn_try_studio: 'ចូលទៅកាន់ TTS Studio',
+        btn_listen_demo: 'ស្ដាប់សំឡេងសាកល្បង',
+        demo_title: 'សាកល្បង TTS ផ្ទាល់ (Interactive Demo)',
+        btn_speak_now: 'បន្លឺសំឡេងភ្លាមៗ',
+        how_title: 'របៀបដំណើរការងាយៗ',
+        how_sub: 'បង្កើតឯកសារសំឡេងត្រឹមតែ ៣ ជំហានប៉ុណ្ណោះ',
+        step1_title: 'បញ្ចូលអត្ថបទ ឬ ឯកសារ',
+        step1_desc: 'ចម្លងអត្ថបទជាភាសាខ្មែរដាក់ក្នុងប្រអប់ ឬ Upload ឯកសារ PDF, DOCX, TXT ចូលប្រព័ន្ធដោយផ្ទាល់។',
+        step2_title: 'ជ្រើសរើសសំឡេង & ល្បឿន',
+        step2_desc: 'ជ្រើសរើសអ្នកអានស្រី ឬប្រុស កែសម្រួលកម្រិតសម្លេង (Pitch) ល្បឿនអាន (Speed) តាមតម្រូវការជាក់ស្ដែង។',
+        step3_title: 'ទាញយក Audio គុណភាពខ្ពស់',
+        step3_desc: 'ចុចបង្កើតសំឡេង រួចស្ដាប់ផ្ទៀងផ្ទាត់ និងទាញយកជាឯកសារ WAV / MP3 គុណភាព Studio បានភ្លាមៗ។',
+        feat_title: 'លក្ខណៈពិសេសចម្បង',
+        feat_sub: 'បំពាក់ដោយបច្ចេកវិទ្យា AI ជំនាន់ចុងក្រោយបង្អស់',
+        feat1_title: 'ទឹកដមសម្លេងធម្មជាតិ',
+        feat1_desc: 'ការបញ្ចេញសំឡេងមានដង្ហើម និងការលើកដាក់សំឡេងដូចមនុស្សពិតៗ។',
+        feat2_title: 'ល្បឿនបំប្លែងលឿន',
+        feat2_desc: 'បម្លែងអត្ថបទរាប់ពាន់ពាក្យត្រឹមតែប៉ុន្មានវិនាទីប៉ុណ្ណោះ ជាមួយ Ultra-low latency។',
+        feat3_title: 'ស្គាល់អក្ខរាវិរុទ្ធខ្មែរ',
+        feat3_desc: 'អានព្យញ្ជនៈ ស្រៈ ជើងអក្សរ និងលេខខ្មែរបានត្រឹមត្រូវឥតខ្ចោះ។',
+        feat4_title: 'ទាញយក WAV / MP3',
+        feat4_desc: 'កម្រិតសម្លេង 44.1kHz HD Audio យកទៅប្រើប្រាស់ក្នុងគម្រោងពាណិជ្ជកម្មបាន។',
+        voices_title: 'គំរូសម្លេងតំណាង',
+        voices_sub: 'សាកល្បងស្ដាប់តួអង្គសំឡេងនីមួយៗ',
+        cta_title: 'ត្រៀមខ្លួនរួចរាល់ដើម្បីបង្កើតសំឡេងខ្មែរហើយឬនៅ?',
+        cta_desc: 'ចាប់ផ្ដើមប្រើប្រាស់ដោយឥតគិតថ្លៃថ្ងៃនេះ ដោយមិនចាំបាច់ភ្ជាប់កាតធនាគារឡើយ។',
+        btn_generate_speech: 'បំប្លែងទៅជាសំឡេង (Generate Speech)',
+        pricing_title: 'កញ្ចប់តម្លៃសាមញ្ញ និងសមរម្យ',
+        pricing_sub: 'ជ្រើសរើសកញ្ចប់ដែលស័ក្តិសមបំផុតសម្រាប់តម្រូវការរបស់អ្នក អាចប្តូរ ឬផ្អាកបានគ្រប់ពេល'
+      },
+      en: {
+        nav_home: 'Home',
+        nav_tts: 'Text to Speech',
+        nav_doc: 'Doc to Speech',
+        nav_library: 'Audio Library',
+        nav_dashboard: 'Dashboard',
+        nav_pricing: 'Pricing',
+        nav_docs: 'Docs',
+        hero_badge: '✨ Khmer Neural Acoustic Engine 2.4 - Ready to Deploy',
+        hero_title_1: 'State-of-the-Art Khmer',
+        hero_title_2: 'AI Voice & Speech Synthesis',
+        hero_desc: 'Turn your Khmer text into lifelike speech for audiobooks, YouTube videos, announcements, and applications with natural acoustics.',
+        btn_try_studio: 'Open TTS Studio',
+        btn_listen_demo: 'Listen Demo',
+        demo_title: 'Interactive Khmer TTS Demo',
+        btn_speak_now: 'Speak Now',
+        how_title: 'How It Works',
+        how_sub: 'Create human-like Khmer speech in 3 easy steps',
+        step1_title: 'Enter Text or Document',
+        step1_desc: 'Type or paste Khmer text or drag and drop PDF, DOCX, or TXT documents.',
+        step2_title: 'Select Voice & Speed',
+        step2_desc: 'Pick your preferred voice, customize speed, pitch, and intonation.',
+        step3_title: 'Download Studio Audio',
+        step3_desc: 'Preview playback immediately and export lossless WAV files.',
+        feat_title: 'Core Features',
+        feat_sub: 'Powered by advanced acoustic modeling',
+        feat1_title: 'Natural Intonation',
+        feat1_desc: 'Authentic Khmer rhythm, breathing pauses, and accurate phonetics.',
+        feat2_title: 'Instant Synthesis',
+        feat2_desc: 'Real-time client and cloud synthesis with near zero latency.',
+        feat3_title: 'Full Khmer Unicode',
+        feat3_desc: 'Flawless parsing of consonants, independent vowels, and numbers.',
+        feat4_title: 'Export to WAV',
+        feat4_desc: 'Lossless standard WAV file ready for commercial production.',
+        voices_title: 'Featured Voice Actors',
+        voices_sub: 'Listen to sample voices',
+        cta_title: 'Ready to Synthesize Khmer Voice?',
+        cta_desc: 'Get started for free today. No setup or backend installation needed.',
+        btn_generate_speech: 'Generate Speech',
+        pricing_title: 'Simple & Transparent Pricing',
+        pricing_sub: 'Choose the best plan for your scale'
+      }
+    };
+
+    function toggleLanguage() {
+      appState.lang = (appState.lang === 'km') ? 'en' : 'km';
+      document.getElementById('currentLangLabel').innerText = appState.lang.toUpperCase();
+      applyTranslations();
+      showToast('Language Updated', `Switched language to ${appState.lang.toUpperCase()}`);
+    }
+
+    function applyTranslations() {
+      const map = translations[appState.lang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const k = el.getAttribute('data-i18n');
+        if (map[k]) el.innerText = map[k];
+      });
+    }
+
+    /* ==========================================================================
+       SYNTHETIC AUDIO GENERATOR (STANDALONE & OFFLINE CAPABLE)
+       ========================================================================== */
+    function generateSyntheticWav(text, speed, pitch, voiceKey) {
+      const sampleRate = 44100;
+      const baseDuration = Math.max(1.8, Math.min(30, text.length * 0.08));
+      const adjustedDuration = baseDuration / speed;
+      const numSamples = Math.floor(sampleRate * adjustedDuration);
+      
+      const buffer = new Float32Array(numSamples);
+      const voice = KHMER_VOICES[voiceKey] || KHMER_VOICES.sophea;
+      const baseFreq = voice.freq * pitch;
+
+      for (let i = 0; i < numSamples; i++) {
+        const t = i / sampleRate;
+        const envelope = Math.sin(Math.PI * 4 * t) > 0 ? Math.sin(Math.PI * 4 * t) : 0;
+        
+        // Formant synthesis simulation
+        const fundamental = Math.sin(2 * Math.PI * baseFreq * t);
+        const harmonic1 = 0.5 * Math.sin(2 * Math.PI * (baseFreq * 2) * t);
+        const harmonic2 = 0.25 * Math.sin(2 * Math.PI * (baseFreq * 3) * t);
+        const breath = (Math.random() * 2 - 1) * 0.03;
+        
+        buffer[i] = (fundamental + harmonic1 + harmonic2 + breath) * envelope * 0.4;
+      }
+
+      // Encode buffer into 16-bit PCM WAV Blob
+      const wavBuffer = new ArrayBuffer(44 + buffer.length * 2);
+      const view = new DataView(wavBuffer);
+
+      function writeStr(offset, str) {
+        for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+      }
+
+      writeStr(0, 'RIFF');
+      view.setUint32(4, 36 + buffer.length * 2, true);
+      writeStr(8, 'WAVE');
+      writeStr(12, 'fmt ');
+      view.setUint32(16, 16, true);
+      view.setUint16(20, 1, true); // PCM
+      view.setUint16(22, 1, true); // Mono
+      view.setUint32(24, sampleRate, true);
+      view.setUint32(28, sampleRate * 2, true);
+      view.setUint16(32, 2, true);
+      view.setUint16(34, 16, true);
+      writeStr(36, 'data');
+      view.setUint32(40, buffer.length * 2, true);
+
+      let offset = 44;
+      for (let i = 0; i < buffer.length; i++) {
+        let s = Math.max(-1, Math.min(1, buffer[i]));
+        view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+        offset += 2;
+      }
+
+      return new Blob([view], { type: 'audio/wav' });
+    }
+
+    function playSpeech(text, voiceKey, speed, pitch, volume, onComplete) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        
+        const voices = window.speechSynthesis.getVoices();
+        const kmVoice = voices.find(v => v.lang.includes('km') || v.lang.includes('kh'));
+        if (kmVoice) utter.voice = kmVoice;
+
+        utter.rate = speed;
+        utter.pitch = pitch;
+        utter.volume = volume;
+
+        utter.onend = () => { if (onComplete) onComplete(); };
+        utter.onerror = () => { if (onComplete) onComplete(); };
+        
+        window.speechSynthesis.speak(utter);
+      } else {
+        if (onComplete) setTimeout(onComplete, 2500);
+      }
+    }
+
+    function stopSpeech() {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      appState.tts.isPlaying = false;
+      updatePlayPauseButtonUI();
+      stopWaveformAnimation();
+
+      const dot = document.getElementById('demoStatusDot');
+      const text = document.getElementById('demoStatusText');
+      if (dot && text) {
+        dot.className = "w-2 h-2 rounded-full bg-slate-500";
+        text.innerText = "បានផ្អាក (Stopped)";
+      }
+    }
+
+    /* ==========================================================================
+       HOME DEMO & SAMPLE PREVIEWS
+       ========================================================================== */
+    function setQuickPrompt(khmerText) {
+      document.getElementById('homeDemoInput').value = khmerText;
+      runHomeDemoSpeech();
+    }
+
+    function runHomeDemoSpeech() {
+      const text = document.getElementById('homeDemoInput').value.trim();
+      const voice = document.getElementById('homeVoiceSelect').value;
+      if (!text) {
+        showToast('សូមបញ្ចូលអត្ថបទ', 'Please input some text', 'error');
+        return;
+      }
+
+      const dot = document.getElementById('demoStatusDot');
+      const textStatus = document.getElementById('demoStatusText');
+      dot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-ping";
+      textStatus.innerText = "កំពុងបន្លឺសំឡេង (Speaking...)";
+
+      const bars = document.querySelectorAll('#demoWaveBars span');
+      bars.forEach(b => b.classList.add('wave-anim'));
+
+      playSpeech(text, voice, 1.0, 1.0, 1.0, () => {
+        dot.className = "w-2 h-2 rounded-full bg-slate-500";
+        textStatus.innerText = "រួចរាល់ (Ready)";
+        bars.forEach(b => b.classList.remove('wave-anim'));
+      });
+
+      logAdminAction(`Home Demo speech tested: voice=${voice}`);
+    }
+
+    function playVoiceCardSample(voiceKey, phrase) {
+      const voice = KHMER_VOICES[voiceKey];
+      showToast(`កំពុងចាក់គំរូ ${voice.name}`, 'Playing voice sample...');
+      playSpeech(phrase, voiceKey, voice.baseRate, voice.basePitch, 1.0, null);
+      logAdminAction(`Sample previewed: ${voiceKey}`);
+    }
+
+    /* ==========================================================================
+       TEXT TO SPEECH STUDIO LOGIC
+       ========================================================================== */
+    const khmerPresets = [
+      "រាជធានីភ្នំពេញ គឺជាបេះដូងនៃព្រះរាជាណាចក្រកម្ពុជា ដែលសម្បូរទៅដោយប្រវត្តិសាស្ត្រ វប្បធម៌ និងការអភិវឌ្ឍយ៉ាងឆាប់រហ័ស។",
+      "សូមស្វាគមន៍មកកាន់ការផ្សាយពាណិជ្ជកម្មពិសេស! រាល់ការជាវផលិតផលនៅថ្ងៃនេះ លោកអ្នកនឹងទទួលបានការបញ្ចុះតម្លៃយ៉ាងច្រើនសន្ធឹកសន្ធាប់។",
+      "កាលពីព្រេងនាយ មានសេដ្ឋីម្នាក់មានទ្រព្យសម្បត្តិស្តុកស្តម្ភ តែគាត់ជាមនុស្សមានចិត្តសប្បុរស ចូលចិត្តជួយអ្នកក្រីក្រជានិច្ច។"
+    ];
+
+    function insertSampleKhmerText() {
+      const rand = Math.floor(Math.random() * khmerPresets.length);
+      document.getElementById('ttsTextInput').value = khmerPresets[rand];
+      updateTtsCounters();
+      showToast('បានបញ្ចូលអត្ថបទគំរូ', 'Inserted sample Khmer text');
+    }
+
+    function clearTtsText() {
+      document.getElementById('ttsTextInput').value = '';
+      updateTtsCounters();
+    }
+
+    function copyTtsInputText() {
+      const txt = document.getElementById('ttsTextInput').value;
+      if (!txt) return;
+      navigator.clipboard.writeText(txt).then(() => {
+        showToast('បានចម្លង', 'Text copied to clipboard');
+      });
+    }
+
+    function updateTtsCounters() {
+      const val = document.getElementById('ttsTextInput').value;
+      const chars = val.length;
+      const words = val.trim() ? val.trim().split(/[\s​]+/).length : 0;
+      document.getElementById('ttsCharCount').innerText = `${chars} តួអក្សរ`;
+      document.getElementById('ttsWordCount').innerText = `${words} ពាក្យ`;
+    }
+
+    document.getElementById('ttsTextInput').addEventListener('input', updateTtsCounters);
+
+    function applyStyleTag(style) {
+      appState.tts.style = style;
+      document.querySelectorAll('.style-tag').forEach(tag => {
+        if (tag.getAttribute('data-style') === style) {
+          tag.className = "style-tag px-2.5 py-1 rounded-lg bg-brand-500/20 text-brand-300 border border-brand-500/40 text-[11px] font-medium";
+        } else {
+          tag.className = "style-tag px-2.5 py-1 rounded-lg bg-slate-800 text-slate-400 hover:bg-slate-700 text-[11px] font-medium";
+        }
+      });
+      
+      const sSlider = document.getElementById('ttsSpeedSlider');
+      const pSlider = document.getElementById('ttsPitchSlider');
+      if (style === 'news') { sSlider.value = 1.05; pSlider.value = 1.0; }
+      else if (style === 'calm') { sSlider.value = 0.85; pSlider.value = 0.95; }
+      else { sSlider.value = 1.0; pSlider.value = 1.0; }
+      updateSliders();
+    }
+
+    function updateSliders() {
+      const speed = parseFloat(document.getElementById('ttsSpeedSlider').value);
+      const pitch = parseFloat(document.getElementById('ttsPitchSlider').value);
+      const vol = parseFloat(document.getElementById('ttsVolumeSlider').value);
+
+      document.getElementById('speedVal').innerText = `${speed.toFixed(1)}x`;
+      document.getElementById('pitchVal').innerText = pitch.toFixed(2);
+      document.getElementById('volumeVal').innerText = `${Math.round(vol * 100)}%`;
+
+      appState.tts.speed = speed;
+      appState.tts.pitch = pitch;
+      appState.tts.volume = vol;
+    }
+
+    document.getElementById('ttsSpeedSlider').addEventListener('input', updateSliders);
+    document.getElementById('ttsPitchSlider').addEventListener('input', updateSliders);
+    document.getElementById('ttsVolumeSlider').addEventListener('input', updateSliders);
+
+    document.querySelectorAll('input[name="studioVoice"]').forEach(r => {
+      r.addEventListener('change', e => {
+        appState.tts.voice = e.target.value;
+      });
+    });
+
+    function generateKhmerSpeech() {
+      const text = document.getElementById('ttsTextInput').value.trim();
+      if (!text) {
+        showToast('សូមបញ្ចូលអត្ថបទ', 'Khmer text input is empty', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('generateAudioBtn');
+      const btnTxt = document.getElementById('genBtnText');
+      btn.disabled = true;
+      btnTxt.innerText = "កំពុងបំប្លែង... (Synthesizing...)";
+
+      const selectedRadio = document.querySelector('input[name="studioVoice"]:checked');
+      const voiceKey = selectedRadio ? selectedRadio.value : 'sophea';
+      const voiceObj = KHMER_VOICES[voiceKey];
+
+      setTimeout(() => {
+        const wavBlob = generateSyntheticWav(text, appState.tts.speed, appState.tts.pitch, voiceKey);
+        const url = URL.createObjectURL(wavBlob);
+
+        appState.tts.currentBlob = wavBlob;
+        appState.tts.currentUrl = url;
+        appState.tts.duration = Math.max(2.5, (text.length * 0.08) / appState.tts.speed);
+
+        document.getElementById('playerTrackTitle').innerText = text.length > 40 ? text.substring(0, 40) + '...' : text;
+        document.getElementById('playerTrackMeta').innerText = `សំឡេង: ${voiceObj.name} • ${appState.tts.speed}x • រយៈពេល ~${Math.round(appState.tts.duration)}s`;
+
+        document.getElementById('playerPlayPauseBtn').disabled = false;
+        document.getElementById('playerSeekSlider').disabled = false;
+        document.getElementById('btnDownloadWav').disabled = false;
+        document.getElementById('btnSaveToLibrary').disabled = false;
+        document.getElementById('playerTimeDisplay').innerText = `00:00 / ${formatTime(appState.tts.duration)}`;
+
+        drawWaveformVisualizer(0);
+
+        btn.disabled = false;
+        btnTxt.innerText = "បំប្លែងទៅជាសំឡេង (Generate Speech)";
+
+        showToast('ជោគជ័យ!', 'Audio synthesized and ready.');
+        togglePlayerPlayback();
+
+        recordGenerationEvent(text.length, appState.tts.duration, voiceObj.name);
+      }, 750);
+    }
+
+    /* ==========================================================================
+       AUDIO PLAYER CONTROLS & CANVAS WAVEFORM
+       ========================================================================== */
+    let playerInterval = null;
+    let waveAnimFrame = null;
+
+    function togglePlayerPlayback() {
+      if (!appState.tts.currentUrl) return;
+
+      if (appState.tts.isPlaying) {
+        stopSpeech();
+        clearInterval(playerInterval);
+      } else {
+        const text = document.getElementById('ttsTextInput').value.trim();
+        const voiceKey = appState.tts.voice;
+
+        appState.tts.isPlaying = true;
+        updatePlayPauseButtonUI();
+        startWaveformAnimation();
+
+        playSpeech(text, voiceKey, appState.tts.speed, appState.tts.pitch, appState.tts.volume, () => {
+          if (appState.tts.loop) {
+            appState.tts.currentTime = 0;
+            togglePlayerPlayback();
+          } else {
+            stopSpeech();
+            appState.tts.currentTime = 0;
+            document.getElementById('playerSeekSlider').value = 0;
+            document.getElementById('playerTimeDisplay').innerText = `00:00 / ${formatTime(appState.tts.duration)}`;
+          }
+        });
+
+        clearInterval(playerInterval);
+        playerInterval = setInterval(() => {
+          if (appState.tts.isPlaying && appState.tts.currentTime < appState.tts.duration) {
+            appState.tts.currentTime += 0.2;
+            const progress = (appState.tts.currentTime / appState.tts.duration) * 100;
+            document.getElementById('playerSeekSlider').value = Math.min(100, progress);
+            document.getElementById('playerTimeDisplay').innerText = `${formatTime(appState.tts.currentTime)} / ${formatTime(appState.tts.duration)}`;
+          }
+        }, 200);
+      }
+    }
+
+    function restartPlayerPlayback() {
+      stopSpeech();
+      appState.tts.currentTime = 0;
+      document.getElementById('playerSeekSlider').value = 0;
+      togglePlayerPlayback();
+    }
+
+    function updatePlayPauseButtonUI() {
+      const btn = document.getElementById('playerPlayPauseBtn');
+      btn.innerHTML = appState.tts.isPlaying ? `<i data-lucide="pause" class="w-5 h-5"></i>` : `<i data-lucide="play" class="w-5 h-5 ml-0.5"></i>`;
+      lucide.createIcons();
+    }
+
+    function togglePlayerLoop() {
+      appState.tts.loop = !appState.tts.loop;
+      const btn = document.getElementById('playerLoopBtn');
+      if (appState.tts.loop) {
+        btn.classList.add('text-brand-400');
+        showToast('Loop Activated', 'Audio will replay repeatedly');
+      } else {
+        btn.classList.remove('text-brand-400');
+      }
+    }
+
+    function formatTime(sec) {
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function resizeWaveformCanvas() {
+      const canvas = document.getElementById('waveformCanvas');
+      if (!canvas || !canvas.parentElement) return;
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
+      drawWaveformVisualizer(appState.tts.currentTime / (appState.tts.duration || 1));
+    }
+    window.addEventListener('resize', resizeWaveformCanvas);
+
+    function drawWaveformVisualizer(ratio) {
+      const canvas = document.getElementById('waveformCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+
+      ctx.clearRect(0, 0, w, h);
+      const bars = Math.floor(w / 6);
+      const currentBar = Math.floor(bars * (ratio || 0));
+
+      for (let i = 0; i < bars; i++) {
+        const barH = Math.abs(Math.sin(i * 0.16) * Math.cos(i * 0.09)) * (h * 0.72) + 5;
+        const x = i * 6;
+        const y = (h - barH) / 2;
+        ctx.fillStyle = (i <= currentBar) ? '#8b5cf6' : '#334155';
+        ctx.beginPath();
+        ctx.roundRect(x, y, 3.5, barH, 2);
+        ctx.fill();
+      }
+    }
+
+    function startWaveformAnimation() {
+      function animate() {
+        if (!appState.tts.isPlaying) return;
+        const ratio = appState.tts.currentTime / (appState.tts.duration || 1);
+        drawWaveformVisualizer(ratio);
+        waveAnimFrame = requestAnimationFrame(animate);
+      }
+      animate();
+    }
+
+    function stopWaveformAnimation() {
+      if (waveAnimFrame) cancelAnimationFrame(waveAnimFrame);
+      drawWaveformVisualizer(appState.tts.currentTime / (appState.tts.duration || 1));
+    }
+
+    function downloadCurrentAudio(format) {
+      if (!appState.tts.currentBlob) return;
+      const a = document.createElement('a');
+      a.href = appState.tts.currentUrl;
+      a.download = `KhmerVoice_${appState.tts.voice}_${Date.now()}.wav`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showToast('ទាញយកជោគជ័យ', 'Saved audio file');
+      logAdminAction(`Audio file downloaded`);
+    }
+
+    function saveAudioToLibrary() {
+      const text = document.getElementById('ttsTextInput').value.trim();
+      const voiceKey = appState.tts.voice;
+      const voiceObj = KHMER_VOICES[voiceKey];
+
+      const item = {
+        id: 'aud_' + Date.now(),
+        title: text.length > 35 ? text.substring(0, 35) + '...' : text,
+        fullText: text,
+        voiceKey: voiceKey,
+        voiceName: voiceObj.name,
+        charCount: text.length,
+        duration: Math.round(appState.tts.duration),
+        date: new Date().toLocaleDateString('km-KH'),
+        timestamp: Date.now()
+      };
+
+      appState.audioLibrary.unshift(item);
+      localStorage.setItem(STORAGE_KEY_LIB, JSON.stringify(appState.audioLibrary));
+      showToast('រក្សាទុកជោគជ័យ', 'Saved to Audio Library');
+      renderAudioLibrary();
+    }
+
+    /* ==========================================================================
+       DOCUMENT TO SPEECH EXTRACTOR
+       ========================================================================== */
+    function handleDragOver(e) {
+      e.preventDefault();
+      document.getElementById('dropZone').classList.add('border-brand-500', 'bg-brand-500/10');
+    }
+
+    function handleDragLeave(e) {
+      e.preventDefault();
+      document.getElementById('dropZone').classList.remove('border-brand-500', 'bg-brand-500/10');
+    }
+
+    function handleFileDrop(e) {
+      e.preventDefault();
+      document.getElementById('dropZone').classList.remove('border-brand-500', 'bg-brand-500/10');
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        processUploadedFile(e.dataTransfer.files[0]);
+      }
+    }
+
+    function handleFileSelect(e) {
+      if (e.target.files && e.target.files[0]) {
+        processUploadedFile(e.target.files[0]);
+      }
+    }
+
+    function processUploadedFile(file) {
+      document.getElementById('fileInfoCard').classList.remove('hidden');
+      document.getElementById('loadedFileName').innerText = file.name;
+      document.getElementById('loadedFileSize').innerText = `${(file.size / 1024).toFixed(1)} KB`;
+
+      const reader = new FileReader();
+      if (file.name.endsWith('.txt')) {
+        reader.onload = e => {
+          displayExtractedText(e.target.result);
+        };
+        reader.readAsText(file);
+      } else {
+        // Simulated structured parser for PDF/Word
+        reader.onload = () => {
+          setTimeout(() => {
+            const simulated = `ឯកសារដកស្រង់ចេញពី: ${file.name}\n\n` +
+              `ព្រះរាជាណាចក្រកម្ពុជា គឺជាប្រទេសមួយស្ថិតនៅតំបន់អាស៊ីអាគ្នេយ៍ ដែលមានប្រវត្តិសាស្ត្រ និងសម្បត្តិវប្បធម៌ដ៏យូរលង់។\n\n` +
+              `ប្រព័ន្ធសំឡេងខ្មែរ AI អាចអានឯកសារនេះបានយ៉ាងច្បាស់លាស់ ដោយរក្សានូវអក្ខរាវិរុទ្ធត្រឹមត្រូវ។`;
+            displayExtractedText(simulated);
+          }, 500);
+        };
+        reader.readAsArrayBuffer(file);
+      }
+    }
+
+    function displayExtractedText(txt) {
+      document.getElementById('extractedTextPreview').value = txt;
+      document.getElementById('docCharCount').innerText = `(${txt.length} Characters)`;
+      document.getElementById('docGenAudioBtn').disabled = false;
+      showToast('ស្រង់អត្ថបទជោគជ័យ', 'Extracted document text');
+      logAdminAction(`Document processed: ${document.getElementById('loadedFileName').innerText}`);
+    }
+
+    function resetDocUpload() {
+      document.getElementById('fileInfoCard').classList.add('hidden');
+      document.getElementById('extractedTextPreview').value = '';
+      document.getElementById('docFileInput').value = '';
+      document.getElementById('docCharCount').innerText = '(0 Characters)';
+      document.getElementById('docGenAudioBtn').disabled = true;
+    }
+
+    function copyExtractedText() {
+      const txt = document.getElementById('extractedTextPreview').value;
+      if (!txt) return;
+      navigator.clipboard.writeText(txt).then(() => {
+        showToast('បានចម្លង', 'Copied text to clipboard');
+      });
+    }
+
+    function sendExtractedTextToStudio() {
+      const txt = document.getElementById('extractedTextPreview').value;
+      if (!txt) return;
+      document.getElementById('ttsTextInput').value = txt;
+      updateTtsCounters();
+      navigateTo('tts');
+      showToast('បញ្ជូនទៅស្ទូឌីយោ', 'Loaded text into speech studio');
+    }
+
+    /* ==========================================================================
+       AUDIO LIBRARY
+       ========================================================================== */
+    function loadLibrary() {
+      const data = localStorage.getItem(STORAGE_KEY_LIB);
+      if (data) {
+        try { appState.audioLibrary = JSON.parse(data); } catch(e) { appState.audioLibrary = []; }
+      } else {
+        appState.audioLibrary = [
+          {
+            id: 'aud_1',
+            title: 'ព័ត៌មានជាតិពេលព្រឹក',
+            fullText: 'ជម្រាបសួរពុកម៉ែបងប្អូនទាំងអស់គ្នា សូមស្វាគមន៍មកកាន់ការផ្សាយព័ត៌មានជាតិពេលព្រឹក។',
+            voiceKey: 'sophea',
+            voiceName: 'សុភា (Sophea)',
+            charCount: 78,
+            duration: 6,
+            date: '28/09/2026',
+            timestamp: Date.now() - 86400000
+          },
+          {
+            id: 'aud_2',
+            title: 'រឿងព្រេងកោះកេរ',
+            fullText: 'កាលពីរាប់រយឆ្នាំមុន ប្រាសាទកោះកេរត្រូវបានកសាងឡើងយ៉ាងអស្ចារ្យកណ្តាលព្រៃជ្រៅ។',
+            voiceKey: 'dara',
+            voiceName: 'ដារ៉ា (Dara)',
+            charCount: 84,
+            duration: 7,
+            date: '27/09/2026',
+            timestamp: Date.now() - 172800000
+          }
+        ];
+        localStorage.setItem(STORAGE_KEY_LIB, JSON.stringify(appState.audioLibrary));
+      }
+    }
+
+    function renderAudioLibrary() {
+      const container = document.getElementById('libraryContainer');
+      const q = (document.getElementById('libSearchInput')?.value || '').toLowerCase();
+      const vFilter = document.getElementById('libFilterVoice')?.value || 'all';
+      const sort = document.getElementById('libSortOrder')?.value || 'newest';
+
+      let items = [...appState.audioLibrary];
+
+      if (q) items = items.filter(i => i.title.toLowerCase().includes(q) || i.fullText.toLowerCase().includes(q));
+      if (vFilter !== 'all') items = items.filter(i => i.voiceKey === vFilter);
+
+      if (sort === 'newest') items.sort((a,b) => b.timestamp - a.timestamp);
+      if (sort === 'oldest') items.sort((a,b) => a.timestamp - b.timestamp);
+
+      if (items.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-12 border border-slate-800 rounded-3xl bg-slate-900/40">
+            <i data-lucide="music-4" class="w-10 h-10 text-slate-600 mx-auto mb-2"></i>
+            <h4 class="text-white text-xs sm:text-sm font-semibold font-khmer">មិនមានឯកសារសំឡេងនៅឡើយទេ</h4>
+            <p class="text-xs text-slate-500 font-khmer mt-1">សូមទៅកាន់ TTS Studio ដើម្បីបង្កើតសំឡេងដំបូងរបស់អ្នក</p>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      container.innerHTML = items.map(item => `
+        <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-slate-700 transition flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <button onclick="playLibraryItem('${item.id}')" class="w-9 h-9 rounded-full bg-brand-500/20 hover:bg-brand-500 text-brand-400 hover:text-white flex items-center justify-center transition">
+              <i data-lucide="play" class="w-4 h-4 ml-0.5"></i>
+            </button>
+            <div>
+              <h4 class="font-bold text-white text-xs sm:text-sm font-khmer">${item.title}</h4>
+              <p class="text-[11px] text-slate-400 font-khmer mt-0.5">
+                <span>${item.voiceName}</span> • <span>${item.duration}s</span> • <span>${item.charCount} តួ</span> • <span>${item.date}</span>
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 self-end sm:self-center">
+            <button onclick="openRenameModal('${item.id}')" title="Rename" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition">
+              <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+            </button>
+            <button onclick="downloadLibraryItem('${item.id}')" title="Download WAV" class="p-2 rounded-xl bg-slate-800 hover:bg-brand-600 text-slate-300 hover:text-white transition">
+              <i data-lucide="download" class="w-3.5 h-3.5"></i>
+            </button>
+            <button onclick="deleteLibraryItem('${item.id}')" title="Delete" class="p-2 rounded-xl bg-slate-800 hover:bg-rose-950/50 text-slate-400 hover:text-rose-400 transition">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    function playLibraryItem(id) {
+      const item = appState.audioLibrary.find(i => i.id === id);
+      if (!item) return;
+      showToast(`កំពុងចាក់: ${item.title}`, 'Playing library item');
+      playSpeech(item.fullText, item.voiceKey, 1.0, 1.0, 1.0, null);
+    }
+
+    let activeRenameId = null;
+    function openRenameModal(id) {
+      const item = appState.audioLibrary.find(i => i.id === id);
+      if (!item) return;
+      activeRenameId = id;
+      document.getElementById('renameInput').value = item.title;
+      document.getElementById('renameModal').classList.remove('hidden');
+    }
+
+    function closeRenameModal() {
+      document.getElementById('renameModal').classList.add('hidden');
+      activeRenameId = null;
+    }
+
+    function confirmRenameAudio() {
+      const val = document.getElementById('renameInput').value.trim();
+      if (!val || !activeRenameId) return;
+
+      const item = appState.audioLibrary.find(i => i.id === activeRenameId);
+      if (item) {
+        item.title = val;
+        localStorage.setItem(STORAGE_KEY_LIB, JSON.stringify(appState.audioLibrary));
+        renderAudioLibrary();
+        closeRenameModal();
+        showToast('បានប្ដូរឈ្មោះ', 'Audio title updated');
+      }
+    }
+
+    function downloadLibraryItem(id) {
+      const item = appState.audioLibrary.find(i => i.id === id);
+      if (!item) return;
+
+      const wavBlob = generateSyntheticWav(item.fullText, 1.0, 1.0, item.voiceKey);
+      const url = URL.createObjectURL(wavBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${item.title.replace(/[\s/]/g, '_')}.wav`;
+      a.click();
+      showToast('ទាញយកជោគជ័យ', 'Saved WAV audio');
+    }
+
+    function deleteLibraryItem(id) {
+      appState.audioLibrary = appState.audioLibrary.filter(i => i.id !== id);
+      localStorage.setItem(STORAGE_KEY_LIB, JSON.stringify(appState.audioLibrary));
+      renderAudioLibrary();
+      showToast('បានលុប', 'Removed audio from library');
+    }
+
+    function clearAllLibrary() {
+      appState.audioLibrary = [];
+      localStorage.setItem(STORAGE_KEY_LIB, JSON.stringify(appState.audioLibrary));
+      renderAudioLibrary();
+      showToast('បានសម្អាត', 'Audio library cleared');
+    }
+
+    /* ==========================================================================
+       METRICS & DASHBOARD
+       ========================================================================== */
+    function recordGenerationEvent(chars, dur, voiceName) {
+      const g = parseInt(localStorage.getItem('kva_stat_gen') || '28') + 1;
+      const c = parseInt(localStorage.getItem('kva_stat_chars') || '24310') + chars;
+      const s = parseFloat(localStorage.getItem('kva_stat_sec') || '3372') + dur;
+
+      localStorage.setItem('kva_stat_gen', g.toString());
+      localStorage.setItem('kva_stat_chars', c.toString());
+      localStorage.setItem('kva_stat_sec', s.toString());
+
+      updateDashboardMetrics();
+      logAdminAction(`Generated audio: ${chars} chars (${voiceName})`);
+    }
+
+    function updateDashboardMetrics() {
+      const totalGen = localStorage.getItem('kva_stat_gen') || '28';
+      const totalChars = parseInt(localStorage.getItem('kva_stat_chars') || '24310');
+      const totalSec = parseFloat(localStorage.getItem('kva_stat_sec') || '3372');
+
+      if (document.getElementById('dashTotalGen')) {
+        document.getElementById('dashTotalGen').innerText = totalGen;
+        document.getElementById('dashCharsUsed').innerText = totalChars.toLocaleString();
+        document.getElementById('dashAudioMinutes').innerText = `${(totalSec / 60).toFixed(1)} min`;
+
+        const pct = Math.min(100, Math.round((totalChars / 50000) * 100));
+        document.getElementById('dashQuotaBar').style.width = `${pct}%`;
+      }
+
+      const actContainer = document.getElementById('dashActivityList');
+      if (actContainer) {
+        const activities = [
+          { title: 'បំប្លែងអត្ថបទព័ត៌មាន (Sophea)', time: '5 នាទីមុន', badge: 'Completed' },
+          { title: 'ស្រង់អត្ថបទពី docx (Report_2026.docx)', time: '20 នាទីមុន', badge: 'Extracted' },
+          { title: 'បង្កើតសម្លេងរឿងនិទាន (Dara)', time: '2 ម៉ោងមុន', badge: 'Completed' },
+          { title: 'ទាញយកឯកសារ Audio WAV', time: '1 ថ្ងៃមុន', badge: 'Downloaded' }
+        ];
+
+        actContainer.innerHTML = activities.map(a => `
+          <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-950/60 border border-slate-800/80 text-xs">
+            <div class="flex items-center gap-2.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              <span class="font-khmer text-slate-200">${a.title}</span>
+            </div>
+            <div class="flex items-center gap-2 text-slate-500">
+              <span class="font-khmer">${a.time}</span>
+              <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-[10px]">${a.badge}</span>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    /* ==========================================================================
+       MY ACCOUNT & API KEYS
+       ========================================================================== */
+    function generateNewApiKey() {
+      const rand = Math.random().toString(36).substring(2, 10);
+      const k = `kva_live_${rand}_${Date.now().toString().slice(-4)}`;
+      document.getElementById('apiKeyDisplay').value = k;
+      showToast('API Key ថ្មីត្រូវបានបង្កើត', 'New developer API key generated');
+      logAdminAction(`New API key generated: ${k.slice(0, 12)}...`);
+    }
+
+    function toggleApiKeyVisibility() {
+      const el = document.getElementById('apiKeyDisplay');
+      el.type = (el.type === 'password') ? 'text' : 'password';
+    }
+
+    function copyApiKey() {
+      const val = document.getElementById('apiKeyDisplay').value;
+      navigator.clipboard.writeText(val).then(() => {
+        showToast('បានចម្លង API Key', 'Copied API key to clipboard');
+      });
+    }
+
+    /* ==========================================================================
+       PRICING & CURRENCY SWITCHER
+       ========================================================================== */
+    function setPricingCurrency(curr) {
+      appState.currency = curr;
+      const usdBtn = document.getElementById('currencyUsdBtn');
+      const khrBtn = document.getElementById('currencyKhrBtn');
+
+      if (curr === 'USD') {
+        usdBtn.className = "px-4 py-1.5 rounded-xl text-xs font-semibold bg-brand-600 text-white transition";
+        khrBtn.className = "px-4 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition font-khmer";
+        document.getElementById('priceFreeVal').innerText = '$0';
+        document.getElementById('priceProVal').innerText = '$12';
+        document.getElementById('priceEntVal').innerText = '$49';
+      } else {
+        khrBtn.className = "px-4 py-1.5 rounded-xl text-xs font-semibold bg-brand-600 text-white transition font-khmer";
+        usdBtn.className = "px-4 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition";
+        document.getElementById('priceFreeVal').innerText = '0 ៛';
+        document.getElementById('priceProVal').innerText = '49,000 ៛';
+        document.getElementById('priceEntVal').innerText = '199,000 ៛';
+      }
+    }
+
+    function upgradePlanNotice(tier) {
+      showToast(`កញ្ចប់ ${tier}`, `Plan selected: ${tier}`);
+      logAdminAction(`User upgraded plan: ${tier}`);
+    }
+
+    /* ==========================================================================
+       DOCS CODE SNIPPETS
+       ========================================================================== */
+    const codeSnippets = {
+      curl: `curl -X POST https://api.khmervoice.ai/v1/tts/synthesize \\
+  -H "Authorization: Bearer kva_live_98f74a01e3b52d908c6" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "text": "ជម្រាបសួរពុកម៉ែបងប្អូនទាំងអស់គ្នា",
+    "voice": "sophea",
+    "speed": 1.0,
+    "format": "wav"
+  }' --output khmer_speech.wav`,
+      python: `import requests
+
+url = "https://api.khmervoice.ai/v1/tts/synthesize"
+headers = {
+    "Authorization": "Bearer kva_live_98f74a01e3b52d908c6",
+    "Content-Type": "application/json"
+}
+payload = {
+    "text": "ជម្រាបសួរពុកម៉ែបងប្អូនទាំងអស់គ្នា",
+    "voice": "sophea",
+    "speed": 1.0,
+    "format": "wav"
+}
+
+res = requests.post(url, json=payload)
+with open("khmer_audio.wav", "wb") as f:
+    f.write(res.content)
+print("Audio generated successfully!")`,
+      node: `import fs from 'fs';
+
+const res = await fetch("https://api.khmervoice.ai/v1/tts/synthesize", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer kva_live_98f74a01e3b52d908c6",
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    text: "ជម្រាបសួរពុកម៉ែបងប្អូនទាំងអស់គ្នា",
+    voice: "dara",
+    speed: 1.0,
+    format: "wav"
+  })
+});
+
+const buffer = await res.arrayBuffer();
+fs.writeFileSync("output.wav", Buffer.from(buffer));
+console.log("Audio saved to output.wav");`
+    };
+
+    let activeSnippet = 'curl';
+    function switchCodeSnippet(lang) {
+      activeSnippet = lang;
+      document.getElementById('codeSnippetBox').innerText = codeSnippets[lang];
+      ['curl', 'python', 'node'].forEach(l => {
+        const btn = document.getElementById(`btnTab${l.charAt(0).toUpperCase() + l.slice(1)}`);
+        if (btn) {
+          btn.className = (l === lang) ? "px-3 py-1 rounded-lg bg-slate-800 text-white text-xs font-mono font-medium" : "px-3 py-1 rounded-lg text-slate-400 hover:text-white text-xs font-mono font-medium";
+        }
+      });
+    }
+
+    function copyCurrentCodeSnippet() {
+      navigator.clipboard.writeText(codeSnippets[activeSnippet]).then(() => {
+        showToast('បានចម្លងកូដ', 'Snippet copied to clipboard');
+      });
+    }
+
+    /* ==========================================================================
+       AUTHENTICATION & SESSION
+       ========================================================================== */
+    function checkAuth() {
+      const stored = localStorage.getItem(STORAGE_KEY_AUTH);
+      if (stored) {
+        try { appState.user = JSON.parse(stored); } catch(e){ appState.user = null; }
+      }
+      renderAuthUI();
+    }
+
+    function renderAuthUI() {
+      const c = document.getElementById('authContainer');
+      if (appState.user) {
+        c.innerHTML = `
+          <button onclick="navigateTo('account')" class="flex items-center gap-2 p-1.5 pr-3 rounded-xl border border-slate-700 bg-slate-900 hover:bg-slate-800 text-xs text-slate-200 transition">
+            <span class="w-6 h-6 rounded-full bg-brand-600 flex items-center justify-center font-bold text-[10px] text-white">
+              ${appState.user.name ? appState.user.name.charAt(0).toUpperCase() : 'U'}
+            </span>
+            <span class="max-w-[90px] truncate">${appState.user.name || 'User'}</span>
+          </button>
+          <button onclick="logoutUser()" title="Logout" class="p-2 rounded-xl border border-slate-800 hover:bg-rose-950/40 text-slate-400 hover:text-rose-400 transition">
+            <i data-lucide="log-out" class="w-4 h-4"></i>
+          </button>
+        `;
+      } else {
+        c.innerHTML = `
+          <button onclick="openAuthModal('login')" class="px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-900 hover:bg-slate-800 text-xs font-medium text-slate-200 transition font-khmer">
+            ចូលគណនី (Login)
+          </button>
+          <button onclick="openAuthModal('register')" class="hidden sm:flex px-3 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-xs font-semibold text-white transition font-khmer">
+            ចុះឈ្មោះ (Sign Up)
+          </button>
+        `;
+      }
+      lucide.createIcons();
+    }
+
+    function openAuthModal(mode) {
+      appState.authMode = mode || 'login';
+      setAuthMode(appState.authMode);
+      document.getElementById('authModal').classList.remove('hidden');
+    }
+
+    function closeAuthModal() {
+      document.getElementById('authModal').classList.add('hidden');
+    }
+
+    function setAuthMode(mode) {
+      appState.authMode = mode;
+      const title = document.getElementById('authModalTitle');
+      const nameField = document.getElementById('authNameField');
+      const passField = document.getElementById('authPassField');
+      const submitBtn = document.getElementById('authSubmitBtn');
+      const toggleText = document.getElementById('authToggleText');
+      const toggleBtn = document.getElementById('authToggleBtn');
+
+      if (mode === 'register') {
+        title.innerText = "បង្កើតគណនី KHMER VOICE AI";
+        nameField.classList.remove('hidden');
+        passField.classList.remove('hidden');
+        submitBtn.innerText = "ចុះឈ្មោះ (Register)";
+        toggleText.innerText = "មានគណនីរួចហើយ?";
+        toggleBtn.innerText = "ចូលប្រើទីនេះ";
+      } else if (mode === 'forgot') {
+        title.innerText = "កំណត់ពាក្យសម្ងាត់ឡើងវិញ";
+        nameField.classList.add('hidden');
+        passField.classList.add('hidden');
+        submitBtn.innerText = "ផ្ញើតំណកំណត់ពាក្យសម្ងាត់";
+        toggleText.innerText = "ចងចាំពាក្យសម្ងាត់បានវិញ?";
+        toggleBtn.innerText = "ត្រឡប់ទៅ Login";
+      } else {
+        title.innerText = "ចូលប្រើប្រាស់ KHMER VOICE AI";
+        nameField.classList.add('hidden');
+        passField.classList.remove('hidden');
+        submitBtn.innerText = "ចូលប្រើប្រាស់ (Login)";
+        toggleText.innerText = "មិនទាន់មានគណនីមែនទេ?";
+        toggleBtn.innerText = "ចុះឈ្មោះទីនេះ";
+      }
+    }
+
+    function toggleAuthMode() {
+      setAuthMode(appState.authMode === 'login' ? 'register' : 'login');
+    }
+
+    function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('authEmailInput').value;
+      const name = document.getElementById('authNameInput').value || email.split('@')[0];
+
+      if (appState.authMode === 'forgot') {
+        showToast('តំណត្រូវបានផ្ញើ', `Reset email sent to ${email}`);
+        closeAuthModal();
+        return;
+      }
+
+      appState.user = { name, email, plan: 'Pro Plan' };
+      localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(appState.user));
+      renderAuthUI();
+      closeAuthModal();
+      showToast('ចូលប្រើជោគជ័យ!', `សូមស្វាគមន៍ ${name}`);
+      logAdminAction(`User logged in: ${email}`);
+    }
+
+    function handleGoogleAuth() {
+      appState.user = { name: 'Google User', email: 'creator@khmer.ai', plan: 'Pro Plan' };
+      localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(appState.user));
+      renderAuthUI();
+      closeAuthModal();
+      showToast('Google Sign-in ជោគជ័យ!', 'Welcome back!');
+      logAdminAction(`User authenticated with Google OAuth`);
+    }
+
+    function logoutUser() {
+      appState.user = null;
+      localStorage.removeItem(STORAGE_KEY_AUTH);
+      renderAuthUI();
+      showToast('បានចាកចេញ', 'Logged out');
+      navigateTo('home');
+    }
+
+    /* ==========================================================================
+       ADMIN PANEL LOGS & USER TABLE
+       ========================================================================== */
+    const mockUsers = [
+      { name: 'Sokha Chan', email: 'sokha@telecom.kh', plan: 'Enterprise', used: '840,200', status: 'Active' },
+      { name: 'Rithy Panh', email: 'rithy@studio.com', plan: 'Pro', used: '194,500', status: 'Active' },
+      { name: 'Borey Vorn', email: 'borey@creator.io', plan: 'Pro', used: '248,900', status: 'Active' },
+      { name: 'Kanha Pich', email: 'kanha@univ.edu.kh', plan: 'Free', used: '8,400', status: 'Active' },
+      { name: 'Chenda Meas', email: 'chenda@media.com', plan: 'Enterprise', used: '1,240,000', status: 'Active' }
+    ];
+
+    function logAdminAction(msg) {
+      const time = new Date().toTimeString().split(' ')[0];
+      const entry = `[${time}] ${msg}`;
+      appState.adminLogs.unshift(entry);
+      if (appState.adminLogs.length > 40) appState.adminLogs.pop();
+      localStorage.setItem(STORAGE_KEY_LOGS, JSON.stringify(appState.adminLogs));
+
+      const box = document.getElementById('adminLogBox');
+      if (box) box.innerHTML = appState.adminLogs.map(l => `<div>${l}</div>`).join('');
+    }
+
+    function loadAdminLogs() {
+      const saved = localStorage.getItem(STORAGE_KEY_LOGS);
+      if (saved) {
+        try { appState.adminLogs = JSON.parse(saved); } catch(e){}
+      } else {
+        appState.adminLogs = [
+          '[12:00:10] Cluster node Phnom-Penh-01 active. Latency: 12ms',
+          '[12:02:18] Neural voice model Sophea 2.4 loaded successfully',
+          '[12:05:40] API gateway status: 100% OK'
+        ];
+      }
+    }
+
+    function refreshAdminPanel() {
+      const tbody = document.getElementById('adminUserTableBody');
+      if (!tbody) return;
+
+      tbody.innerHTML = mockUsers.map(u => `
+        <tr class="hover:bg-slate-900/50 transition">
+          <td class="p-3">
+            <p class="font-bold text-white font-khmer">${u.name}</p>
+            <p class="text-[11px] text-slate-500">${u.email}</p>
+          </td>
+          <td class="p-3">
+            <span class="px-2 py-0.5 rounded text-[10px] ${u.plan === 'Enterprise' ? 'bg-accent-teal/10 text-accent-teal border border-accent-teal/20' : 'bg-brand-500/10 text-brand-300'}">${u.plan}</span>
+          </td>
+          <td class="p-3 font-mono">${u.used} chars</td>
+          <td class="p-3">
+            <span class="inline-flex items-center gap-1 text-emerald-400 text-[11px]"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>${u.status}</span>
+          </td>
+          <td class="p-3 text-right">
+            <button onclick="showToast('Admin', 'User settings updated')" class="text-slate-400 hover:text-white px-2 py-1 bg-slate-800 rounded-lg">Edit</button>
+          </td>
+        </tr>
+      `).join('');
+
+      const box = document.getElementById('adminLogBox');
+      if (box) box.innerHTML = appState.adminLogs.map(l => `<div>${l}</div>`).join('');
+    }
+
+    function filterAdminUsers() {
+      const q = (document.getElementById('adminUserSearch')?.value || '').toLowerCase();
+      const filtered = mockUsers.filter(u => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q));
+      const tbody = document.getElementById('adminUserTableBody');
+      if (!tbody) return;
+
+      tbody.innerHTML = filtered.map(u => `
+        <tr class="hover:bg-slate-900/50 transition">
+          <td class="p-3">
+            <p class="font-bold text-white font-khmer">${u.name}</p>
+            <p class="text-[11px] text-slate-500">${u.email}</p>
+          </td>
+          <td class="p-3">
+            <span class="px-2 py-0.5 rounded text-[10px] ${u.plan === 'Enterprise' ? 'bg-accent-teal/10 text-accent-teal border border-accent-teal/20' : 'bg-brand-500/10 text-brand-300'}">${u.plan}</span>
+          </td>
+          <td class="p-3 font-mono">${u.used} chars</td>
+          <td class="p-3">
+            <span class="inline-flex items-center gap-1 text-emerald-400 text-[11px]"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>${u.status}</span>
+          </td>
+          <td class="p-3 text-right">
+            <button onclick="showToast('Admin', 'User settings updated')" class="text-slate-400 hover:text-white px-2 py-1 bg-slate-800 rounded-lg">Edit</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    /* ==========================================================================
+       TOAST NOTIFICATIONS
+       ========================================================================== */
+    let toastTimer = null;
+    function showToast(title, message, type = 'success') {
+      const toast = document.getElementById('toastNotification');
+      const t = document.getElementById('toastTitle');
+      const m = document.getElementById('toastMessage');
+      const icon = document.getElementById('toastIcon');
+
+      t.innerText = title;
+      m.innerText = message;
+
+      if (type === 'error') {
+        icon.className = "p-2 rounded-xl bg-rose-500/20 text-rose-400 shrink-0";
+        icon.innerHTML = `<i data-lucide="alert-circle" class="w-4 h-4"></i>`;
+      } else {
+        icon.className = "p-2 rounded-xl bg-brand-500/20 text-brand-400 shrink-0";
+        icon.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i>`;
+      }
+      lucide.createIcons();
+
+      toast.classList.remove('translate-y-24', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.add('translate-y-24', 'opacity-0');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }, 3200);
+    }
+
+    /* ==========================================================================
+       APPLICATION BOOTSTRAP
+       ========================================================================== */
+    window.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      loadLibrary();
+      loadAdminLogs();
+      checkAuth();
+      switchCodeSnippet('curl');
+      applyTranslations();
+      updateTtsCounters();
+      updateDashboardMetrics();
+
+      setTimeout(() => {
+        resizeWaveformCanvas();
+      }, 200);
+    });
+  </script>
+</body>
+</html>
